@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>BottomRectanglePage.qml</file>
+        <file>ChatRectangle.qml</file>
+        <file>FriendCirclePage.qml</file>
+    </qresource>
+</RCC>
