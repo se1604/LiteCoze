@@ -5,15 +5,19 @@ CONFIG -= qt
 LIBS += -lboost_system -lpthread -ljsoncpp
 SOURCES += \
         main.cpp \
+    clientui.cpp \
     client.cpp \
+    conversion.cpp \
     netizen.cpp \
-    message.cpp \
     privatechatroom.cpp \
-    conversion.cpp
+    message.cpp \
+    loginUI.cpp
 
 HEADERS += \
+    clientui.h \
     client.h \
+    conversion.h \
     netizen.h \
-    message.h \
     privatechatroom.h \
-    conversion.h
+    message.h \
+    loginUI.h

@@ -1,21 +1,17 @@
 #include "client.h"
 #include <iostream>
-#include "message.h"
 #include "netizen.h"
-#include "conversion.h"
-#include "netizen.h"
-
 using namespace std;
-extern Netizen *netizen;
 
 Client *Client::_instance = nullptr;
 
+extern Netizen * netizen;
 
 Client::Client(boost::asio::io_context &io_context,const tcp::resolver::results_type &endpoints):
     m_io_context{io_context}, m_socket{io_context}
 {
-    _conversion = nullptr;
-    do_connect(endpoints);
+    _recentlyAcceptItem = nullptr;
+    connectServer(endpoints);
 }
 Client *Client::getInstance()
 {
@@ -32,41 +28,7 @@ Client *Client::getInstance(boost::asio::io_context &io_context,const tcp::resol
     return _instance;
 }
 
-void Client::write(Conversion *conversion)
-{
-    boost::asio::post(m_io_context,
-                      [this, conversion]()
-    {
-        do_write(conversion);
-    });
-}
-
-void Client::close()
-{
-    cout << "关闭套接字" << endl;
-    boost::asio::post(m_io_context, [this]() { m_socket.close(); });
-}
-
-void Client::parseObject()
-{
-    if (_conversion->getType() == 1){
-        auto msg = new Message();
-        msg->parseJson(_conversion);
-    }
-    if (_conversion->getType() == 2)
-    {
-        if (netizen->m_nickname == ""){
-            netizen->parseJson(_conversion);
-        }
-        else if (netizen->m_nickname != "") {
-            auto n = new Netizen();
-            netizen->addFriend(n, n->parseJson(_conversion));
-        }
-    }
-}
-
-
-void Client::do_connect(const tcp::resolver::results_type &endpoints)
+void Client::connectServer(const tcp::resolver::results_type &endpoints)
 {
     boost::asio::async_connect(m_socket, endpoints,
                                [this](boost::system::error_code ec, tcp::endpoint)
@@ -74,7 +36,7 @@ void Client::do_connect(const tcp::resolver::results_type &endpoints)
         if (!ec)
         {
             std::cout << "连接成功" << std::endl;
-            do_read_header();
+            do_accept_head();
         }
         else{
             cout << "连接失败" << endl;
@@ -82,42 +44,54 @@ void Client::do_connect(const tcp::resolver::results_type &endpoints)
     });
 }
 
-void Client::do_read_header()
+void Client::logIn(long id, string password)
 {
-    _conversion = new Conversion();
+    netizen = new Netizen(id, password);
+    send(netizen->toJson());
+}
+
+void Client::sendNewMessage(string content)
+{
+    send(netizen->createNewMessage(content));
+}
+
+void Client::do_accept_head()
+{
+    _recentlyAcceptItem = new Conversion();
     boost::asio::async_read(m_socket,
-                            boost::asio::buffer(_conversion->data(), Conversion::header_length),
+                            boost::asio::buffer(_recentlyAcceptItem->data(), Conversion::header_length),
                             [this](boost::system::error_code ec, std::size_t /*length*/)
     {
-        if (!ec && _conversion->decode_header())
+        cout << "ec: "  << ec << endl;
+        if (!ec && _recentlyAcceptItem->decode_header())
         {
-            do_read_body();
+            do_accept_body();
         }
         else
         {
-            cout << "读取header失败" << endl;
+            cout << "读取head失败" << endl;
             m_socket.close();
         }
     });
 }
 
-void Client::do_read_body()
+void Client::do_accept_body()
 {
     boost::asio::async_read(m_socket,
-                            boost::asio::buffer(_conversion->type(), _conversion->body_length() + Conversion::type_length) ,
+                            boost::asio::buffer(_recentlyAcceptItem->type(), _recentlyAcceptItem->body_length() + Conversion::type_length) ,
                             [this](boost::system::error_code ec, std::size_t /*length*/)
     {
-        if (!ec && _conversion->decode_type())
+        if (!ec && _recentlyAcceptItem->decode_type())
         {
             std::cout << "接收成功" << endl;
             //std::cout.write(_conversion->body(), _conversion->body_length());
             parseObject();
 
             std::cout << "\n";
-            delete _conversion;
-            _conversion = nullptr;
+            delete _recentlyAcceptItem;
+            _recentlyAcceptItem = nullptr;
 
-            do_read_header();
+            do_accept_head();
         }
         else
         {
@@ -127,13 +101,48 @@ void Client::do_read_body()
     });
 }
 
-void Client::do_write(Conversion *conversion)
+void Client::selectFriend(long friendID)
+{
+    netizen->selectFriend(friendID);
+}
+
+bool Client::parseObject()
+{
+    if (_recentlyAcceptItem->getType() == 2){
+        netizen->parseJson(_recentlyAcceptItem);
+        return true;
+    }
+    if (_recentlyAcceptItem->getType() == 3){
+        auto msg = new Message();
+        msg->parseJson(_recentlyAcceptItem);
+
+    }
+    return false;
+}
+
+bool Client::isLoginSuccess()
+{
+    if(netizen->isLoginSuccess()){
+        return true;
+    }
+    return false;
+}
+void Client::send(Conversion *conversion)
+{
+    boost::asio::post(m_io_context,
+                      [this, conversion]()
+    {
+        do_send(conversion);
+    });
+}
+void Client::do_send(Conversion *conversion)
 {
     boost::asio::async_write(m_socket,
                              boost::asio::buffer(conversion->data(), conversion->length()),[this, conversion](boost::system::error_code ec, std::size_t /*length*/)
     {
         if (!ec)
         {
+            cout << conversion->data()<< endl;
             cout << "发送成功" <<endl;
             //cout << conversion->data() << conversion->length() << endl;
         }

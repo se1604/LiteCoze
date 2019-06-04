@@ -1,38 +1,38 @@
 #ifndef NETIZEN_H
 #define NETIZEN_H
-#include <string>
-#include <vector>
 
-class PrivateChatRoom;
+#include <iostream>
+#include <vector>
+#include "privatechatroom.h"
+
 class Conversion;
 
 class Netizen
 {
 public:
-    friend class Client;
-    Netizen(long id = 0, std::string nickname = "");
+    Netizen(long id, std::string password);
+    Netizen(long id, std::string nickname, std::string avatar);
+
+    void selectFriend(long friendID);
+    Conversion* createNewMessage(std::string content);
+    bool parseJson(Conversion *conversion);
+    Conversion* toJson();//将Netizen对象转换为json字符串
     void addFriend(Netizen *f, long roomID);
+    //测试代码
+    void printInfo();
+    bool isLoginSuccess();
 
-    void printInfo();//测试代码
-
-    std::vector<PrivateChatRoom *> privateChatRooms() const;
-    PrivateChatRoom *getPrivateChatRoom(long roomID);
-    PrivateChatRoom *getPrivateChatRoomN(long nitizenID);
-    long id() const;
-
-    std::string toJson();//将Netizen对象转换为json字符串
-    long parseJson(Conversion *conversion);//解析json字符串
-
-    void write();
-
-    void setId(long id);
+    PrivateChatRoom *room(long roomID);
 
 private:
     long m_id;
+    std::string m_password;
     std::string m_nickname;
+    std::string m_avatar;
     std::vector<Netizen*> _friends;
     std::vector<PrivateChatRoom *> _privateChatRooms;
-    Conversion * _conversion;
+    Conversion* _conversion;
+    PrivateChatRoom* m_selectedRoom;
 };
 
 #endif // NETIZEN_H

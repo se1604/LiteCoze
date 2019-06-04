@@ -1,29 +1,23 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
-#include <string>
-#include "json/json.h"
 
+#include <iostream>
 class PrivateChatRoom;
 class Conversion;
+
 class Message
 {
 public:
-    friend class Client;
-    Message(std::string content,long senderID, PrivateChatRoom *room);
+    Message(std::string content, PrivateChatRoom *room);
     Message();
-
-    void setTime();
-    std::string toJson();//将Message对象转换为json字符串
-    bool parseJson(Conversion *conversion);//解析json字符串
-    //void receive();
-    void write();
-
+    Conversion* toJson();
+    bool parseJson(Conversion * conversion);
 private:
+    void setTime();
+
     std::string m_time;//发送消息的时间
     std::string m_content;//消息的内容
-    long m_senderID;//发送消息的人的id
     PrivateChatRoom *_room;//消息所属的房间
-
     Conversion *_conversion;
 };
 

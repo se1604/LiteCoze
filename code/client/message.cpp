@@ -1,45 +1,38 @@
-#include <vector>
-#include <sstream>
-#include <memory>
+#include "message.h"
+#include "conversion.h"
 #include <iostream>
 #include <time.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include "message.h"
+#include <string>
 #include "json/json.h"
+#include <sstream>
+#include <memory>
 #include "privatechatroom.h"
-#include "client.h"
 #include "netizen.h"
-#include "conversion.h"
 
-
-extern Netizen * netizen;
 using namespace std;
+extern Netizen * netizen;
 
-Message::Message(std::string content,long senderID, PrivateChatRoom *room):
-    m_content{content}, m_senderID{senderID}, _room{room}
+
+Message::Message(std::string content,PrivateChatRoom *room):
+    m_content{content}, _room{room}
 {
     _conversion = new Conversion();
     setTime();
-    toJson();
+    //toJson();
 
-    _conversion->setType(1);
-    _conversion->encode_header();
+    _conversion->setType(3);
+//    _conversion->encode_header();
     _conversion->encode_type();
 
-    _room->addMessage(this);
+    //_room->addMessage(this);
 }
 Message::Message()
 {
-    m_content = "";
-    m_senderID = 0;
-    _room = nullptr;
-    _conversion = new Conversion();
-    _conversion->setType(1);
-}
 
+}
 
 
 
@@ -61,14 +54,13 @@ void Message::setTime()
     //cout << s << " " << s.size();
 }
 
-std::string Message::toJson()
+Conversion *Message::toJson()
 {
     Json::Value root;
     std::ostringstream os;
 
     root["time"] = m_time;
     root["content"] = m_content;
-    root["senderID"] = m_senderID;
     root["roomID"] = _room->id();
 
     Json::StreamWriterBuilder writerBuilder;
@@ -89,14 +81,15 @@ std::string Message::toJson()
     //_conversion->m_body_length = jsonStr.length();
     //memcpy(data_ + header_length, c, body_length_);
     strcpy(_conversion->body(),c);
+    _conversion->encode_header();
 
     //cout << _conversion->data() << endl;
 
-    return jsonStr;
+    return _conversion;
 }
 
-bool Message::parseJson(Conversion *conversion)
-{
+bool Message::parseJson(Conversion * conversion){
+    _conversion = conversion;
     char* c = conversion->body();
     if (strlen(c) == 0)
         return false;
@@ -118,27 +111,15 @@ bool Message::parseJson(Conversion *conversion)
     }
     m_time = root["time"].asString();
     m_content = root["content"].asString();
-    m_senderID = root["senderID"].asLargestInt();
-    _room = netizen->getPrivateChatRoom(root["roomID"].asLargestInt());
+    long roomID = root["roomID"].asLargestInt();
+
+    _room = netizen->room(roomID);
+    _room->addMessage(this);
+
     //测试
     std::cout << "time: " << m_time << ": ";
     std::cout << "content: " << m_content << std::endl;
-    //std::cout << "senderID: " << m_senderID << std::endl;
-    //std::cout << "roomID: " << _room->id() << std::endl;
-
-    _room->addMessage(this);
+    std::cout << "roomID: " << roomID << std::endl;
 
     return true;
 }
-
-void Message::write()
-{
-    Client::getInstance()->write(_conversion);
-}
-
-//void Message::receive()
-//{
-//    //parseJson();
-//    _room->addMessage(this);
-//}
-

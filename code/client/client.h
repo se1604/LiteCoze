@@ -1,36 +1,38 @@
 #ifndef CLIENT_H
 #define CLIENT_H
+
 #include <boost/asio.hpp>
+#include "conversion.h"
 
 using boost::asio::ip::tcp;
 
-class Conversion;
-class Message;
-//单例类
 class Client
 {
 public:
     static Client* getInstance();
     static Client* getInstance(boost::asio::io_context& io_context,const tcp::resolver::results_type &endpoints);
+    void createNetizen();
+    void connectServer(const tcp::resolver::results_type& endpoints);
+    void logIn(long id, std::string password);
+    void sendNewMessage(std::string content);
+    void do_accept_head();
+    void do_accept_body();
+    void showAccountInfo(Conversion *conversio);
+    void showAllOffLineMessages(Conversion *conversio);
+    void selectFriend(long friendID);
+    void send(Conversion *conversion);
+    bool parseObject();
+    bool isLoginSuccess();
 
-    void write(Conversion *conversion);
-    void close();
-
-    void do_read_header();
-    void parseObject();
-
-    //void writeNetizen(Conversion *conversion);
 private:
-    Client(boost::asio::io_context& io_context,const  tcp::resolver::results_type &endpoints);
-    void do_connect(const tcp::resolver::results_type& endpoints);
-    void do_read_body();
-    void do_write(Conversion *conversion);
+    Client(boost::asio::io_context& io_context,const tcp::resolver::results_type &endpoints);
+    void do_send(Conversion *conversion);
 
-    boost::asio::io_context& m_io_context;
-    tcp::socket m_socket;
-    static Client * _instance;
+   boost::asio::io_context& m_io_context;
+   tcp::socket m_socket;
+   Conversion* _recentlyAcceptItem;
 
-    Conversion *_conversion;
+   static Client * _instance;
 };
 
 #endif // CLIENT_H

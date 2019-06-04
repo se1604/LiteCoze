@@ -1,11 +1,10 @@
-#ifndef CONVERSION_H
+﻿#ifndef CONVERSION_H
 #define CONVERSION_H
 #include <string>
+
 class Conversion
 {
 public:
-    //friend class Message;
-    friend class Network;
     friend class Message;
     Conversion();
     enum { header_length = 4 };
@@ -32,7 +31,7 @@ public:
 private:
     char m_data[header_length + max_body_length];
     std::size_t m_body_length;
-    int m_type;
+    int m_type;//1为Netizen登录信息，2为普通Netizen信息，3为Message
 };
 
 #endif // CONVERSION_H

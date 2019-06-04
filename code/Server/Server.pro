@@ -2,24 +2,25 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
+LIBS += -lboost_system -lpthread -ljsoncpp
 
 SOURCES += \
         main.cpp \
-    server.cpp \
-    manager.cpp \
+    privatechat.cpp \
     netizen.cpp \
+    networktransmission.cpp \
     privatechatroom.cpp \
+    conversion.cpp \
     message.cpp \
-    network.cpp \
-    conversion.cpp
-#INCLUDEPATH += ../../x2struct-master
-LIBS += -lboost_system -lpthread -ljsoncpp
+    manager.cpp \
+    dbmanger.cpp
 
 HEADERS += \
-    server.h \
-    manager.h \
+    privatechat.h \
     netizen.h \
+    networktransmission.h \
     privatechatroom.h \
+    conversion.h \
     message.h \
-    network.h \
-    conversion.h
+    manager.h \
+    dbmanger.h

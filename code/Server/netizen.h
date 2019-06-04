@@ -2,41 +2,39 @@
 #define NETIZEN_H
 #include <string>
 #include <vector>
-#include <boost/asio.hpp>
 
 class PrivateChatRoom;
-class Manager;
+class NetworkTransmission;
 class Message;
-class Network;
 class Conversion;
 
 class Netizen
 {
 public:
-    friend class Manager;
-    friend class PrivateChatRoom;
-    friend class Network;
-    Netizen(long id, std::string nickname);
+    Netizen(long id,std::string password, std::string nickname);
     Netizen();
+    void sendAccountInfo();
+    void sendAllOffLineMessages();
+    void sendMessage(Conversion* conversion);
+    void addNewMessageToRoom(Message *message);
     void addFriend(Netizen *f, long roomID);
-    PrivateChatRoom *getPrivateChatRoom(long id);
-    long getPrivateChatRoomID(Netizen *f);
-    void setNetwork(boost::asio::ip::tcp::socket socket);
-
-    //void setSocket(boost::asio::ip::tcp::socket socket);
-    void sendAllFriends();
-
+    bool parseJson(Conversion *conversion);
+    Conversion* toJson();//将Netizen对象转换为json字符串
+    bool checkAccount(Netizen* netizen, NetworkTransmission* networkTransmission);
+    //测试代码
     void printInfo();
-
-    std::string toJson(Netizen *netizen);//将Netizen对象转换为json字符串
-    bool parseJson(Conversion *conversion);//解析json字符串
+    long id() const;
+    bool isOnLine();
+    void offLine();
 
 private:
     long m_id;
+    std::string m_password;
     std::string m_nickname;
+    std::string m_avatar;
     std::vector<Netizen*> _friends;
     std::vector<PrivateChatRoom *> _privateChatRooms;
-    Network *_network;
+    NetworkTransmission *_networkTransmission;
     Conversion *_conversion;
 };
 
