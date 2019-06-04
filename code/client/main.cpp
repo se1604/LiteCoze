@@ -4,6 +4,7 @@
 #include "client.h"
 #include "clientui.h"
 #include "message.h"
+#include "loginUI.h"
 
 Netizen * netizen;
 using namespace std;
@@ -32,8 +33,10 @@ int main()
         auto endpoints = resolver.resolve("127.0.0.1", "8080");
         Client *client = Client::getInstance(io_context, endpoints);
 
+
+        LogInUI* logInUI = new LogInUI();
         ClientUI* clientUI = ClientUI::getInstance();
-        clientUI->logIn(id, password);
+        logInUI->logIn(id, password);
 
         boost::asio::post(io_context,selectFriend);
 
