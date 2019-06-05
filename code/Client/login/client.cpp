@@ -1,6 +1,11 @@
 #include "client.h"
 #include <iostream>
 #include "netizen.h"
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include "loginUI.h"
+#include <QString>
+#include "clientui.h"
 using namespace std;
 
 Client *Client::_instance = nullptr;
@@ -46,6 +51,7 @@ void Client::connectServer(const tcp::resolver::results_type &endpoints)
 
 void Client::logIn(long id, string password)
 {
+
     netizen = new Netizen(id, password);
     send(netizen->toJson());
 }
@@ -101,6 +107,16 @@ void Client::do_accept_body()
     });
 }
 
+void Client::showAccountInfo(QString nickName, long id)
+{
+    emit _clientUI->showAccountInfo(nickName, QString::number(id, 10));
+}
+
+void Client::showFriendMsg(QString id, QString msg)
+{
+    emit _clientUI->showFriendMsg(id, msg);
+}
+
 void Client::selectFriend(long friendID)
 {
     netizen->selectFriend(friendID);
@@ -127,6 +143,11 @@ bool Client::isLoginSuccess()
     }
     return false;
 }
+
+void Client::startClientUI()
+{
+    emit _clientUI->showClientUI();
+}
 void Client::send(Conversion *conversion)
 {
     boost::asio::post(m_io_context,
@@ -152,4 +173,24 @@ void Client::do_send(Conversion *conversion)
             m_socket.close();
         }
     });
+}
+
+ClientUI *Client::getClientUI() const
+{
+    return _clientUI;
+}
+
+void Client::setClientUI(ClientUI *clientUI)
+{
+    _clientUI = clientUI;
+}
+
+LogInUI *Client::getLogInUI() const
+{
+    return _logInUI;
+}
+
+void Client::setLogInUI(LogInUI *logInUI)
+{
+    _logInUI = logInUI;
 }

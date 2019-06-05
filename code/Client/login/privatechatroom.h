@@ -15,6 +15,8 @@ public:
 //    PrivateChatRoom* room(Netizen *f);
     long id() const;
 
+    long friendID();
+
 private:
     long m_id;
     Netizen *_netizen1;

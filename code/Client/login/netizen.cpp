@@ -5,6 +5,8 @@
 #include <memory>
 #include <sstream>
 #include "privatechatroom.h"
+#include "client.h"
+#include <QString>
 
 #include "json/json.h"
 using namespace std;
@@ -78,6 +80,7 @@ bool Netizen::parseJson(Conversion *conversion)
     std::cout << "nickname: " << m_nickname << std::endl;
     printInfo();
 
+
     return true;
 }
 
@@ -129,7 +132,7 @@ void Netizen::addFriend(Netizen *f, long roomID)
 void Netizen::printInfo(){
     cout << "所有的好友信息： " << endl;
     for(auto f : _friends){
-        cout << "Name: " << f->m_nickname << ",  ID: " <<f->m_id <<endl;
+        Client::getInstance()->showAccountInfo(QString::fromStdString(f->m_nickname), f->m_id);
     }
 }
 
@@ -149,4 +152,18 @@ PrivateChatRoom *Netizen::room(long roomID)
         }
     }
     return nullptr;
+}
+
+long Netizen::friendID(long roomID)
+{
+    for (auto pcr : _privateChatRooms){
+        if(roomID == pcr->id()){
+            return pcr->friendID();
+        }
+    }
+}
+
+long Netizen::id() const
+{
+    return m_id;
 }

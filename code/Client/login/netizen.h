@@ -23,6 +23,9 @@ public:
     bool isLoginSuccess();
 
     PrivateChatRoom *room(long roomID);
+    long friendID(long roomID);
+
+    long id() const;
 
 private:
     long m_id;
