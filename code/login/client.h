@@ -10,6 +10,7 @@ using boost::asio::ip::tcp;
 
 class LogInUI;
 class ClientUI;
+class Netizen;
 class SearchUi;         //////////////////
 class Client
 {
@@ -19,11 +20,16 @@ public:
     void createNetizen();
     void connectServer(const tcp::resolver::results_type& endpoints);
     void logIn(long id, std::string password);
+    void findNetizen(long id);//查找
+    void addFriend(long id);//请求添加好友
+    void acceptAddFriendRequest(Netizen *f);//接受请求
     void Register(long id, std::string nickname, std::string password);   ////////////
     void sendNewMessage(std::string content);
     void do_accept_head();
     void do_accept_body();
     void showAccountInfo(QString nickName, long id);
+    void showFindInfo(QString nickName, long id);
+    void showNewFriendInfo(QString nickName, long id);
     void showFriendMsg(QString id, QString msg);
     void showAllOffLineMessages(Conversion *conversio);
     void selectFriend(long friendID);
@@ -41,7 +47,6 @@ public:
 
     SearchUi *getSearchUI() const;            /////////////////
     void setSearchUI(SearchUi *searchUI);        /////////////////
-
 private:
     Client(boost::asio::io_context& io_context,const tcp::resolver::results_type &endpoints);
     void do_send(Conversion *conversion);

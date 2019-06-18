@@ -8,12 +8,21 @@ Page {
     height: 400
     id: page1
 
+    Connections {
+        target: mysearch
+        onShowFindInfo: {
+            console.log("ff")
+            memberListModel.append({"name":nickName, "motto":id})
+        }
+    }
+
     Rectangle {
         id: search
         width: parent.width
         height: 30
 
         TextEdit {
+            id: textEdit
             height: parent.height
             width: parent.width * 0.8
             text: "search"
@@ -27,7 +36,9 @@ Page {
             anchors.rightMargin: 0
 
             text: "搜索"
-
+            onClicked: {
+                mysearch.findNetizen(textEdit.text)
+            }
         }
     }
 
@@ -100,9 +111,17 @@ Page {
                 anchors.bottomMargin: parent.width * 0.02
             }
 
-            Switch {
+            Button {
+                width: 50
+                height: 30
+                text: "添加"
                 anchors.right: parent.right
-
+                anchors.rightMargin: 5
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 5
+                onClicked: {
+                    mysearch.addFriend(mottoText.text)
+                }
             }
         }
         }

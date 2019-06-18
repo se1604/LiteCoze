@@ -60,6 +60,25 @@ void Client::logIn(long id, string password)
     send(netizen->toJson());
 }
 
+void Client::findNetizen(long id)
+{
+    auto f = new Netizen(id);
+    send(f->toJson());
+}
+
+void Client::addFriend(long id)
+{
+    auto f = new Netizen(id);
+    f->setConversionType(7);
+    send(f->toJson());
+}
+
+void Client::acceptAddFriendRequest(Netizen *f)
+{
+    f->setConversionType(8);
+    send(f->toJson());
+}
+
 void Client::Register(long id, string nickname, string password)
 {
     Json::Value root;
@@ -147,6 +166,16 @@ void Client::showAccountInfo(QString nickName, long id)
     emit _clientUI->showAccountInfo(nickName, QString::number(id, 10));
 }
 
+void Client::showFindInfo(QString nickName, long id)
+{
+    emit _searchUI->showFindInfo(nickName, QString::number(id, 10));
+}
+
+void Client::showNewFriendInfo(QString nickName, long id)
+{
+    emit _clientUI->showNewFriendInfo(nickName, QString::number(id, 10));
+}
+
 void Client::showFriendMsg(QString id, QString msg)
 {
     emit _clientUI->showFriendMsg(id, msg);
@@ -166,7 +195,24 @@ bool Client::parseObject()
     if (_recentlyAcceptItem->getType() == 3){
         auto msg = new Message();
         msg->parseJson(_recentlyAcceptItem);
-
+        return true;
+    }
+    if (_recentlyAcceptItem->getType() == 6){
+        auto f = new Netizen();
+        f->parseJson(_recentlyAcceptItem);
+        return true;
+    }
+    if (_recentlyAcceptItem->getType() == 7){
+        auto f = new Netizen();
+        f->parseJson(_recentlyAcceptItem);
+//        acceptAddFriendRequest(f);
+        return true;
+    }
+    if (_recentlyAcceptItem->getType() == 8){
+        auto f = new Netizen();
+        netizen->parseJson(_recentlyAcceptItem);
+        //netizen->addFriend(f)
+        return true;
     }
     return false;
 }

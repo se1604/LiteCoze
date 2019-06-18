@@ -18,6 +18,7 @@ int main()
         auto n1 = new Netizen{111, "111", "Tom"};
         auto n2 = new Netizen{222, "222", "Lily"};
         auto n3 = new Netizen{333, "333", "Amy"};
+        auto n4 = new Netizen{444, "444", "Bob"};
         Manager::getInstance()->printInfo();
         n1->addFriend(n2, 111222);
         n1->addFriend(n3, 111333);

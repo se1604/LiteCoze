@@ -33,10 +33,26 @@ Netizen::Netizen()
     _conversion->setType(2);
 }
 
+Netizen::~Netizen()
+{
+    if (_conversion){
+        delete _conversion;
+        _conversion = nullptr;
+    }
+}
+
 void Netizen::sendAllOffLineMessages()
 {
     for(auto pcr : _privateChatRooms){
         pcr->sendAllOffLineMessages(this);
+    }
+}
+
+void Netizen::sendAllOffLineFriendRequest()
+{
+    for(auto f : _friendRequests){
+        f->setConversionType(7);
+        _networkTransmission->send(f->toJson());
     }
 }
 
@@ -54,6 +70,17 @@ void Netizen::addNewMessageToRoom(Message *message)
     }
 }
 
+void Netizen::addFriendRequest(Netizen *netizen)
+{
+    if(isOnLine()){
+        netizen->setConversionType(7);
+        _networkTransmission->send(netizen->toJson());
+    } else {
+        _friendRequests.push_back(netizen);
+    }
+}
+
+
 void Netizen::addFriend(Netizen *f, long roomID)
 {
     _friends.push_back(f);
@@ -62,6 +89,20 @@ void Netizen::addFriend(Netizen *f, long roomID)
     _privateChatRooms.push_back(room);
     f->_privateChatRooms.push_back(room);
     cout << m_nickname << "与" << f->m_nickname << "成为朋友" << endl << endl;
+}
+
+void Netizen::acceptAddFriendRequest(Netizen *f)
+{
+    long roomID = Manager::getInstance()->allocateRoomID();
+    addFriend(f, roomID);
+    if(_networkTransmission){
+        f->setConversionType(8);
+       _networkTransmission->send(f->toJson(roomID));
+    }
+    if(f->_networkTransmission){
+        setConversionType(8);
+        f->_networkTransmission->send(toJson(roomID));
+    }
 }
 
 bool Netizen::parseJson(Conversion *conversion)
@@ -104,18 +145,54 @@ Conversion* Netizen::toJson()
     root["id"] = m_id;
     root["nickname"] = m_nickname;
 
-    int i = 0;
-    for (auto pcr : _privateChatRooms){
-        auto f = pcr->getFriend(this);
-        friendID[i] = f->m_id;
-        friendNickname[i] = f->m_nickname;
-        roomID[i] = pcr->id();
-        i++;
+    if (_conversion->getType() == 2){
+        int i = 0;
+        for (auto pcr : _privateChatRooms){
+            auto f = pcr->getFriend(this);
+            friendID[i] = f->m_id;
+            friendNickname[i] = f->m_nickname;
+            roomID[i] = pcr->id();
+            i++;
+        }
+        root["friendID"] = friendID;
+        root["friendNickname"] = friendNickname;
+        root["roomID"] = roomID;
     }
-    root["friendID"] = friendID;
-    root["friendNickname"] = friendNickname;
-    root["roomID"] = roomID;
 
+
+    Json::StreamWriterBuilder writerBuilder;
+    unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
+    jsonWriter->write(root, &os);
+
+    std::string jsonStr;
+    jsonStr = os.str();
+
+    //std::cout << "Json:\n" << jsonStr << std::endl;
+
+    char* c;
+    const int len = jsonStr.length();
+    c =new char[len+1];
+    strcpy(c,jsonStr.c_str());
+
+    _conversion->body_length(jsonStr.length());
+    //_conversion->m_body_length = jsonStr.length();
+    //memcpy(data_ + header_length, c, body_length_);
+    strcpy(_conversion->body(),c);
+
+    _conversion->encode_header();
+    _conversion->encode_type();
+    //cout << _conversion->data() << endl;
+    return _conversion;
+}
+
+Conversion *Netizen::toJson(long roomID)
+{
+    Json::Value root;
+    std::ostringstream os;
+
+    root["id"] = m_id;
+    root["nickname"] = m_nickname;
+    root["roomID"] = roomID;
 
     Json::StreamWriterBuilder writerBuilder;
     unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
@@ -151,6 +228,13 @@ bool Netizen::checkAccount(Netizen *netizen, NetworkTransmission* networkTransmi
     return false;
 }
 
+bool Netizen::findNetizen(Netizen *netizen)
+{
+    if(m_id == netizen->m_id){
+        return true;
+    }
+    return false;
+}
 
 void Netizen::printInfo(){
     cout << "id: " << m_id << "昵称: " << m_nickname << endl;
@@ -172,4 +256,10 @@ bool Netizen::isOnLine()
 void Netizen::offLine()
 {
     _networkTransmission = nullptr;
+}
+
+
+void Netizen::setConversionType(int type)
+{
+    _conversion->setType(type);
 }

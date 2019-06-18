@@ -16,7 +16,8 @@ public:
    void showAllOffLineMessages();
    Q_INVOKABLE void selectFriend(QString friendID);
    Q_INVOKABLE void sendNewMessage(QString content);
-   Q_INVOKABLE void startSearchUI();                 ///////////////////
+   Q_INVOKABLE void startSearchUI();
+   Q_INVOKABLE void acceptAddFriendRequest(QString id, QString nickname);
 
    QString id() const;
    void setId(const QString &id);
@@ -25,6 +26,7 @@ signals:
    void showClientUI();
    void showAccountInfo(QString nickName, QString id);
    void showFriendMsg(QString id, QString msg);
+   void showNewFriendInfo(QString nickName, QString id);
 private:
    static ClientUI * _instance;
    QString m_id;

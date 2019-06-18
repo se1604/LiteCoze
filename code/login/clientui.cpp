@@ -1,5 +1,6 @@
 #include "clientui.h"
 #include "client.h"
+#include "netizen.h"
 
 ClientUI *ClientUI::_instance = nullptr;
 
@@ -30,6 +31,12 @@ void ClientUI::sendNewMessage(QString content)
 void ClientUI::startSearchUI()
 {
     Client::getInstance()->startSearchUI();
+}
+
+void ClientUI::acceptAddFriendRequest(QString id, QString nickname)
+{
+    auto f = new Netizen(id.toLong(), nickname.toStdString(), 1);
+    Client::getInstance()->acceptAddFriendRequest(f);
 }
 
 QString ClientUI::id() const

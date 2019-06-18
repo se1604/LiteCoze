@@ -24,6 +24,25 @@ Netizen::Netizen(long id, string nickname, string avatar):
     m_password = string("");
 }
 
+Netizen::Netizen(long id):
+    m_id{id}, m_password{""}, m_nickname{""}, m_avatar{""}
+{
+    _conversion = new Conversion();
+    _conversion->setType(4);
+}
+
+Netizen::Netizen(long id, string nickname, int i):
+    m_id{id}, m_password{""}, m_nickname{nickname}, m_avatar{""}
+{
+    _conversion = new Conversion();
+}
+
+Netizen::Netizen():
+    m_id{0}, m_password{""}, m_nickname{""}, m_avatar{""}
+{
+    _conversion = new Conversion();
+}
+
 void Netizen::selectFriend(long friendID)
 {
     for(auto f : _friends){
@@ -62,23 +81,43 @@ bool Netizen::parseJson(Conversion *conversion)
         std::cout << "parseJson err. " << errs << std::endl;
     }
 
-    friendID = root["friendID"];
-    friendNickname = root["friendNickname"];
-    roomID = root["roomID"];
+    if(conversion->getType() == 2){
+        friendID = root["friendID"];
+        friendNickname = root["friendNickname"];
+        roomID = root["roomID"];
 
-
-    for(unsigned int i =0; i < friendID.size(); i++){
-        auto f = new Netizen(friendID[i].asLargestInt(), friendNickname[i].asString(), "");
-        addFriend(f, roomID[i].asLargestInt());
+        for(unsigned int i =0; i < friendID.size(); i++){
+            auto f = new Netizen(friendID[i].asLargestInt(), friendNickname[i].asString(), "");
+            addFriend(f, roomID[i].asLargestInt());
+        }
+        printInfo();
+        return true;
     }
-
-    m_id = root["id"].asLargestInt();
-    m_nickname = root["nickname"].asString();
+    if(conversion->getType() == 8){
+        auto f = new Netizen(root["id"].asLargestInt(),
+                root["nickname"].asString(), "");
+        addFriend(f, root["roomID"].asLargestInt());
+        printInfo();
+        return true;
+    }
+    if(conversion->getType() == 6){
+        m_id = root["id"].asLargestInt();
+        m_nickname = root["nickname"].asString();
+        Client::getInstance()->showFindInfo(QString::fromStdString(m_nickname), m_id);
+        return true;
+    }
+    if(conversion->getType() == 7){
+        m_id = root["id"].asLargestInt();
+        m_nickname = root["nickname"].asString();
+        std::cout << "id: " << m_id << std::endl;
+        Client::getInstance()->showNewFriendInfo(QString::fromStdString(m_nickname), m_id);
+        return true;
+    }
     //测试
     std::cout << "id: " << m_id << ": ";
     std::cout << "password: " << m_password << std::endl;
     std::cout << "nickname: " << m_nickname << std::endl;
-    printInfo();
+//    printInfo();
 
 
     return true;
@@ -127,6 +166,11 @@ void Netizen::addFriend(Netizen *f, long roomID)
     _privateChatRooms.push_back(room);
     f->_privateChatRooms.push_back(room);
     cout << m_nickname << "与" << f->m_nickname << "成为朋友" << endl << endl;
+}
+
+void Netizen::setConversionType(int type)
+{
+    _conversion->setType(type);
 }
 
 void Netizen::printInfo(){

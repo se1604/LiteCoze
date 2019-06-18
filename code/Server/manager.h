@@ -9,7 +9,10 @@ class Manager
 public:    
     static Manager* getInstance();
     Netizen* checkAccount(Netizen *netizen, NetworkTransmission* networkTransmission);
+    Netizen* findNetizen(Netizen *netizen);
     void addNetizen(Netizen *netizen);
+
+    long allocateRoomID();
 
     void printInfo();//测试代码
 private:

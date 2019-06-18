@@ -32,6 +32,9 @@ private:
     char m_data[header_length + max_body_length];
     std::size_t m_body_length;
     int m_type;//1为Netizen登录信息，2为普通Netizen信息，3为Message
+    //4为查找网民的Netizen信息（id）, 6为返回查找的Netizen信息,
+    //7为请求添加好友的Netizen信息,8为接受添加好友的Netizen信息
+    //5为注册请求
 };
 
 #endif // CONVERSION_H
