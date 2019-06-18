@@ -1,13 +1,25 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
-import loginUI 1.0
+import searchUI 1.0
 
 ApplicationWindow {
     id: window
-    visible: true
+    visible: false
     width: 384
     height: 288
-    title: qsTr("Tabs")
+    title: qsTr("search")
+
+    MySearch {
+        id: mysearch
+    }
+
+    Connections {
+        target: mysearch
+        onShowSearchUI: {
+            console.log("ff")
+            window.visible = true
+        }
+    }
 
     SwipeView {
         id: swipeView

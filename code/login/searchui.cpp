@@ -5,8 +5,3 @@ SearchUi::SearchUi()
 {
     Client::getInstance()->setSearchUI(this);
 }
-
-void SearchUi::startSearch()
-{
-
-}

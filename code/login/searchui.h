@@ -9,9 +9,9 @@ class SearchUi : public QObject
 public:
     SearchUi();
 signals:
-    void start();
+    void showSearchUI();
 private slots:
-    void startSearch();
+
 };
 
 #endif // SEARCHUI_H

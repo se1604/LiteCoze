@@ -1,5 +1,8 @@
 //auther: duHongpeng(duA)
 //time: 2019.3.28
+//5.26
+//6.17
+//6.18
 import QtQuick 2.9
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.3

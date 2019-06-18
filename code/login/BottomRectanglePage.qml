@@ -318,6 +318,25 @@ Item {
             delegate: memberListDelegate
             clip: true
         }
+
+        Rectangle {
+            width: 30
+            height: 30
+            anchors.left: parent.left
+            anchors.leftMargin: 4
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 4
+            color: "red"
+            radius: 180
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                    client.startSearchUI()
+                }
+            }
+        }
     }
 
 //    聊天框

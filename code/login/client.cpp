@@ -183,6 +183,11 @@ void Client::startClientUI()
 {
     emit _clientUI->showClientUI();
 }
+
+void Client::startSearchUI()
+{
+    emit _searchUI->showSearchUI();
+}
 void Client::send(Conversion *conversion)
 {
     boost::asio::post(m_io_context,

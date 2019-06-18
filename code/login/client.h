@@ -31,6 +31,7 @@ public:
     bool parseObject();
     bool isLoginSuccess();
     void startClientUI();
+    void startSearchUI();                   ////////////////////
     LogInUI *getLogInUI() const;
     void setLogInUI(LogInUI *logInUI);
 

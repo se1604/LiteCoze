@@ -7,7 +7,7 @@ ApplicationWindow {
     visible: true
     width: 384
     height: 288
-    title: qsTr("Tabs")
+    title: qsTr("Login&Register")
 
     MyLogin {
         id: mylogin

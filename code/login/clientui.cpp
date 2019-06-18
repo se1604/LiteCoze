@@ -27,6 +27,11 @@ void ClientUI::sendNewMessage(QString content)
     Client::getInstance()->sendNewMessage(content.toStdString());
 }
 
+void ClientUI::startSearchUI()
+{
+    Client::getInstance()->startSearchUI();
+}
+
 QString ClientUI::id() const
 {
     return m_id;

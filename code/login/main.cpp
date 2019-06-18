@@ -41,10 +41,11 @@ int main(int argc, char *argv[])
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QGuiApplication app(argc, argv);
         QQmlApplicationEngine engine;
-        engine.load(QUrl(QStringLiteral("qrc:/Search.qml")));
+        engine.load(QUrl(QStringLiteral("qrc:/Login.qml")));
 
         engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-//        QObject::connect(Client::getInstance()->get, SIGNAL(start()));
+
+        engine.load(QUrl(QStringLiteral("qrc:/Search.qml")));
 
         return app.exec();
     });

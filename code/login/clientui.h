@@ -16,6 +16,7 @@ public:
    void showAllOffLineMessages();
    Q_INVOKABLE void selectFriend(QString friendID);
    Q_INVOKABLE void sendNewMessage(QString content);
+   Q_INVOKABLE void startSearchUI();                 ///////////////////
 
    QString id() const;
    void setId(const QString &id);
