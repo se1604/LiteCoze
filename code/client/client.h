@@ -3,12 +3,11 @@
 
 #include <boost/asio.hpp>
 #include "conversion.h"
-#include <QString>
 
 using boost::asio::ip::tcp;
 
-class LogInUI;
-class ClientUI;
+class Netizen;
+
 class Client
 {
 public:
@@ -17,22 +16,24 @@ public:
     void createNetizen();
     void connectServer(const tcp::resolver::results_type& endpoints);
     void logIn(long id, std::string password);
+//----------------------------------------------
+    void findNetizen(long id);//查找
+    void addFriend(long id);//请求添加好友
+    void acceptAddFriendRequest(Netizen *f);//接受请求
+//----------------------------------------------
     void sendNewMessage(std::string content);
     void do_accept_head();
     void do_accept_body();
-    void showAccountInfo(QString nickName, long id);
-    void showFriendMsg(QString id, QString msg);
+    void showAccountInfo(Conversion *conversio);
     void showAllOffLineMessages(Conversion *conversio);
     void selectFriend(long friendID);
     void send(Conversion *conversion);
-    bool parseObject();
-    bool isLoginSuccess();
-    void startClientUI();
-    LogInUI *getLogInUI() const;
-    void setLogInUI(LogInUI *logInUI);
 
-    ClientUI *getClientUI() const;
-    void setClientUI(ClientUI *clientUI);
+    //----------------------------------------------
+    bool parseObject();
+    //----------------------------------------------
+
+    bool isLoginSuccess();
 
 private:
     Client(boost::asio::io_context& io_context,const tcp::resolver::results_type &endpoints);
@@ -43,9 +44,6 @@ private:
    Conversion* _recentlyAcceptItem;
 
    static Client * _instance;
-
-   LogInUI * _logInUI;
-   ClientUI* _clientUI;
 };
 
 #endif // CLIENT_H

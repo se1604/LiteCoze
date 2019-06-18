@@ -85,6 +85,7 @@ bool NetworkTransmission::parseObject()
         if(_netizen){
             sendAccountInfo();
             _netizen->sendAllOffLineMessages();
+            _netizen->sendAllOffLineFriendRequest();
             return true;
         } else{
 //            throw domain_error("检测失败");
@@ -95,6 +96,54 @@ bool NetworkTransmission::parseObject()
         msg->parseJson(_recentlyAcceptItem, _netizen->id());
         addNewMessageToRoom(msg);
         return true;
+    }else if(_recentlyAcceptItem->getType() == 4) {
+        auto netizen = new Netizen();
+        netizen->parseJson(_recentlyAcceptItem);
+        auto f = Manager::getInstance()->findNetizen(netizen);
+        delete netizen;
+        netizen = nullptr;
+        if(f){
+            f->setConversionType(6);
+            send(f->toJson());
+            return true;
+        } else{
+//            throw domain_error("检测失败");
+            return false;
+        }
+    }else if (_recentlyAcceptItem->getType() == 5) {
+        //register
+        auto netizen = new Netizen();
+        netizen->parseJson(_recentlyAcceptItem);
+        Manager::getInstance()->addNetizen(netizen);
+    }else if(_recentlyAcceptItem->getType() == 7) {
+        auto netizen = new Netizen();
+        netizen->parseJson(_recentlyAcceptItem);
+        auto f = Manager::getInstance()->findNetizen(netizen);
+        delete netizen;
+        netizen = nullptr;
+        if(f){
+            f->addFriendRequest(_netizen);
+            //send(f->toSimpleJson());
+            return true;
+        } else{
+//            throw domain_error("检测失败");
+            return false;
+        }
+    }else if(_recentlyAcceptItem->getType() == 8) {
+        auto netizen = new Netizen();
+        netizen->parseJson(_recentlyAcceptItem);
+        auto f = Manager::getInstance()->findNetizen(netizen);
+        delete netizen;
+        netizen = nullptr;
+        if(f){
+            _netizen->acceptAddFriendRequest(f);
+            //f->addFriendRequest(_netizen);
+            //send(f->toSimpleJson());
+            return true;
+        } else{
+//            throw domain_error("检测失败");
+            return false;
+        }
     }
     return false;
 
