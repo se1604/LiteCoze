@@ -12,7 +12,6 @@ Manager::Manager()
 
 void Manager::addNetizen(Netizen *n)
 {
-    //_netizens->push_back(n);
     _netizens.push_back(n);
 }
 Manager *Manager::getInstance()
@@ -21,8 +20,11 @@ Manager *Manager::getInstance()
         _instance = new Manager();
     return _instance;
 }
+
 Netizen* Manager::checkAccount(Netizen *netizen, NetworkTransmission* networkTransmission)
 {
+    std::cout<<"账户数目"<<_netizens.size();
+    printInfo();
     for(auto n : _netizens){
         if(n->checkAccount(netizen, networkTransmission)){
             return n;

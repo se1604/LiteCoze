@@ -2,7 +2,8 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
-LIBS += -lboost_system -lpthread -ljsoncpp
+LIBS += -lboost_system -lpthread -ljsoncpp -lmysqlclient
+QT += sql
 
 SOURCES += \
         main.cpp \
@@ -13,7 +14,7 @@ SOURCES += \
     conversion.cpp \
     message.cpp \
     manager.cpp \
-    dbmanger.cpp
+    dbbroker.cpp
 
 HEADERS += \
     privatechat.h \
@@ -23,4 +24,4 @@ HEADERS += \
     conversion.h \
     message.h \
     manager.h \
-    dbmanger.h
+    dbbroker.h
