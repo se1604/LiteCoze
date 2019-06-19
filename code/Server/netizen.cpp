@@ -21,7 +21,6 @@ Netizen::Netizen(long id,string password, std::string nickname):
     manager->addNetizen(this);
     _conversion = new Conversion();
     _conversion->setType(2);
-    //toJson();
 }
 
 Netizen::Netizen()
@@ -104,6 +103,7 @@ Conversion* Netizen::toJson()
     root["id"] = m_id;
     root["nickname"] = m_nickname;
 
+
     int i = 0;
     for (auto pcr : _privateChatRooms){
         auto f = pcr->getFriend(this);
@@ -112,6 +112,7 @@ Conversion* Netizen::toJson()
         roomID[i] = pcr->id();
         i++;
     }
+
     root["friendID"] = friendID;
     root["friendNickname"] = friendNickname;
     root["roomID"] = roomID;
@@ -132,13 +133,10 @@ Conversion* Netizen::toJson()
     strcpy(c,jsonStr.c_str());
 
     _conversion->body_length(jsonStr.length());
-    //_conversion->m_body_length = jsonStr.length();
-    //memcpy(data_ + header_length, c, body_length_);
     strcpy(_conversion->body(),c);
 
     _conversion->encode_header();
     _conversion->encode_type();
-    //cout << _conversion->data() << endl;
     return _conversion;
 }
 
@@ -147,6 +145,16 @@ bool Netizen::checkAccount(Netizen *netizen, NetworkTransmission* networkTransmi
     if((m_id == netizen->m_id) && (m_password == netizen->m_password)){
         _networkTransmission = networkTransmission;
         return true;
+    }
+    return false;
+}
+
+bool Netizen::isAlreadyFriend(Netizen *netizen)
+{
+    for(auto f:_friends){
+        if(f->id()==netizen->id()){
+            return true;
+        }
     }
     return false;
 }

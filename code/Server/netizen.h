@@ -21,6 +21,7 @@ public:
     bool parseJson(Conversion *conversion);
     Conversion* toJson();//将Netizen对象转换为json字符串
     bool checkAccount(Netizen* netizen, NetworkTransmission* networkTransmission);
+    bool isAlreadyFriend(Netizen *netizen);
     //测试代码
     void printInfo();
     long id() const;

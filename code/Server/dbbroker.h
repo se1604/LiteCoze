@@ -3,17 +3,18 @@
 
 #include <iostream>
 #include <mysql/mysql.h>
-#include "manager.h"
 #include "netizen.h"
 
+class Manager;
 class DBBroker
 {
 public:
     static DBBroker* getInstance();
     ~DBBroker();
     bool connect();
-    void initAccount();
+    void initAccount();//初始化所有netizen的账户信息
     long stolong(std::string str);
+    void initFrinedInfo(Netizen *netizen);//初始化netizen所有好友信息
 private:
     DBBroker();
     MYSQL *_connect;//数据库连接的句柄

@@ -19,7 +19,6 @@ void PrivateChat::accept()
         if (!ec)
         {
             std::cout << "连接成功"<<std::endl;
-            //auto networkTransmission = new NetworkTransmission(std::move(socket));
             checkLoginAccount(std::move(socket));
         }
         accept();
@@ -31,20 +30,11 @@ void PrivateChat::checkLoginAccount(tcp::socket socket)
 {
     auto networkTransmission = new NetworkTransmission(std::move(socket));
     transferItem(networkTransmission);
-    //sendAccountInfo(networkTransmission);
-    //transferOnLineMessage(networkTransmission);
 }
-
-//void PrivateChat::sendAccountInfo(NetworkTransmission *network)
-//{
-//    network->sendAccountInfo();
-
-//}
 
 void PrivateChat::transferItem(NetworkTransmission *network)
 {
     network->do_accept_head();
-
 }
 
 

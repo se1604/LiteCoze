@@ -10,7 +10,6 @@ using namespace std;
 
 NetworkTransmission::NetworkTransmission(tcp::socket socket): m_socket(std::move(socket))
 {
-    //do_accept_head();
 }
 
 void NetworkTransmission::sendAccountInfo()
@@ -47,12 +46,9 @@ void NetworkTransmission::do_accept_body()
     {
         if (!ec && _recentlyAcceptItem->decode_type())
         {
-
-            //cout << _recentlyAcceptItem->data() << endl;
             parseObject();
             do_accept_head();
             std::cout << "\n";
-
         }
         else
         {

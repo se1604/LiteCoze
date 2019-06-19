@@ -16,6 +16,7 @@ int main()
         PrivateChat* privateChat = new PrivateChat(io_context, endpoint);
 
         DBBroker::getInstance()->initAccount();
+        Manager::getInstance()->initFriend();
         privateChat->accept();
 
         io_context.run();

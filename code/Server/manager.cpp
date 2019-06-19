@@ -14,6 +14,24 @@ void Manager::addNetizen(Netizen *n)
 {
     _netizens.push_back(n);
 }
+
+void Manager::initFriend()
+{
+    for (auto n:_netizens) {
+        DBBroker::getInstance()->initFrinedInfo(n);
+    }
+}
+
+Netizen *Manager::getNetizen(long id)
+{
+    for(auto n:_netizens){
+        if(n->id()==id){
+            return n;
+        }
+    }
+    return nullptr;
+}
+
 Manager *Manager::getInstance()
 {
     if(_instance == nullptr)
@@ -23,7 +41,6 @@ Manager *Manager::getInstance()
 
 Netizen* Manager::checkAccount(Netizen *netizen, NetworkTransmission* networkTransmission)
 {
-    std::cout<<"账户数目"<<_netizens.size();
     printInfo();
     for(auto n : _netizens){
         if(n->checkAccount(netizen, networkTransmission)){

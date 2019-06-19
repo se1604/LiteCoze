@@ -10,7 +10,6 @@ public:
     PrivateChat(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint);
     void accept();
     void checkLoginAccount(boost::asio::ip::tcp::socket socket);
-    //void sendAccountInfo(NetworkTransmission *network);
     void sendAllOffLineMessages();
     void transferItem(NetworkTransmission *network);
 

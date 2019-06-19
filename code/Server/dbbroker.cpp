@@ -1,5 +1,6 @@
 #include "dbbroker.h"
 #include <sstream>
+#include "manager.h"
 
 DBBroker* DBBroker::_instance = nullptr;
 
@@ -65,11 +66,9 @@ void DBBroker::initAccount()
             }
         }
         auto netizen=new Netizen(id,pw,name);
-       // Manager::getInstance()->printInfo();
     }
-
     mysql_free_result(_result); //释放结果集所占用的内存
-    mysql_close(_connect);
+    //mysql_close(_connect);
 }
 
 long DBBroker::stolong(std::string str){
@@ -77,4 +76,52 @@ long DBBroker::stolong(std::string str){
     std::istringstream is(str);
     is>>result;
     return result;
+}
+
+void DBBroker::initFrinedInfo(Netizen *netizen)
+{
+    long temp_id=netizen->id();
+    unsigned num_clo;
+    long room_id=0;
+    long netizen1_id=0;
+    long netizen2_id=0;
+
+    mysql_query(_connect, "SELECT * FROM room");
+    _result = mysql_store_result(_connect);
+    num_clo = mysql_num_fields(_result);
+
+    while ((m_row = mysql_fetch_row(_result)))
+    {
+        for (unsigned i=0; i < num_clo;i++)
+        {
+            if(m_row[i]){
+                if(i==0){
+                    std::string temp=m_row[i];
+                    room_id=stolong(temp);
+                }
+                else if(i==1){
+                    std::string temp=m_row[i];
+                    netizen1_id=stolong(temp);
+                }
+                else if(i==2){
+                    std::string temp=m_row[i];
+                    netizen2_id=stolong(temp);
+                }
+            }
+        }
+        if(netizen1_id==temp_id)
+        {
+            auto n=new Netizen();
+            n=Manager::getInstance()->getNetizen(netizen2_id);
+            if(netizen->isAlreadyFriend(n)==false)
+                netizen->addFriend(n,room_id);
+        }else if(netizen2_id==temp_id){
+            auto n=new Netizen();
+            n=Manager::getInstance()->getNetizen(netizen1_id);
+            if(netizen->isAlreadyFriend(n)==false)
+                netizen->addFriend(n,room_id);
+        }
+    }
+    mysql_free_result(_result);
+    //    mysql_close(_connect);
 }
