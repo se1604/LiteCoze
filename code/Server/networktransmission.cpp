@@ -116,6 +116,8 @@ bool NetworkTransmission::parseObject()
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);
         Manager::getInstance()->addNetizen(netizen);
+        netizen->addAccount();
+        //DBBroker::getInstance()->addAccountTODB(netizen);
     }else if(_recentlyAcceptItem->getType() == 7) {
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);

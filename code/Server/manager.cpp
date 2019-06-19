@@ -14,8 +14,24 @@ Manager::Manager()
 
 void Manager::addNetizen(Netizen *n)
 {
-    //_netizens->push_back(n);
     _netizens.push_back(n);
+}
+
+void Manager::initFriend()
+{
+    for (auto n:_netizens) {
+        DBBroker::getInstance()->initFrinedInfo(n);
+    }
+}
+
+Netizen *Manager::getNetizen(long id)
+{
+    for(auto n:_netizens){
+        if(n->id()==id){
+            return n;
+        }
+    }
+    return nullptr;
 }
 
 long Manager::allocateRoomID()

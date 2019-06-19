@@ -96,6 +96,9 @@ void Netizen::acceptAddFriendRequest(Netizen *f)
 {
     long roomID = Manager::getInstance()->allocateRoomID();
     addFriend(f, roomID);
+    long n1=this->id();
+    long n2=f->id();
+    DBBroker::getInstance()->addFriendTODB(roomID,n1,n2);
     if(_networkTransmission){
         f->setConversionType(8);
        _networkTransmission->send(f->toJson(roomID));
@@ -235,6 +238,24 @@ bool Netizen::findNetizen(Netizen *netizen)
         return true;
     }
     return false;
+}
+
+bool Netizen::isAlreadyFriend(Netizen *netizen)
+{
+    for(auto f:_friends){
+        if(f->id()==netizen->id()){
+            return true;
+        }
+    }
+    return false;
+}
+
+void Netizen::addAccount()
+{
+    long id=this->m_id;
+    std::string psw=this->m_password;
+    std::string name=this->m_nickname;
+    DBBroker::getInstance()->addAccountTODB(id,psw,name);
 }
 
 void Netizen::printInfo(){

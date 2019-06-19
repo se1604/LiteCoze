@@ -28,6 +28,8 @@ public:
     Conversion* toJson(long roomID);
     bool checkAccount(Netizen* netizen, NetworkTransmission* networkTransmission);
     bool findNetizen(Netizen* netizen);
+    bool isAlreadyFriend(Netizen *netizen);
+    void addAccount();
     //测试代码
     void printInfo();
     long id() const;
