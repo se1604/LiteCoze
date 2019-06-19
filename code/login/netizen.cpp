@@ -6,6 +6,7 @@
 #include <sstream>
 #include "privatechatroom.h"
 #include "client.h"
+#include "privatechat.h"
 #include <QString>
 
 #include "json/json.h"
@@ -103,7 +104,7 @@ bool Netizen::parseJson(Conversion *conversion)
     if(conversion->getType() == 6){
         m_id = root["id"].asLargestInt();
         m_nickname = root["nickname"].asString();
-        Client::getInstance()->showFindInfo(QString::fromStdString(m_nickname), m_id);
+        PrivateChat::getInstance()->showFindInfo(QString::fromStdString(m_nickname), m_id);
         return true;
     }
     if(conversion->getType() == 7){

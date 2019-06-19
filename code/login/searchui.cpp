@@ -1,17 +1,18 @@
 #include "searchui.h"
 #include "client.h"
+#include "privatechat.h"
 
 SearchUi::SearchUi()
 {
-    Client::getInstance()->setSearchUI(this);
+    PrivateChat::getInstance()->setSearchUI(this);
 }
 
 void SearchUi::findNetizen(QString id)
 {
-    Client::getInstance()->findNetizen(id.toLong());
+    PrivateChat::getInstance()->findNetizen(id.toLong());
 }
 
 void SearchUi::addFriend(QString id)
 {
-    Client::getInstance()->addFriend(id.toLong());
+    PrivateChat::getInstance()->addFriend(id.toLong());
 }

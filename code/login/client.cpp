@@ -60,24 +60,24 @@ void Client::logIn(long id, string password)
     send(netizen->toJson());
 }
 
-void Client::findNetizen(long id)
-{
-    auto f = new Netizen(id);
-    send(f->toJson());
-}
+//void Client::findNetizen(long id)
+//{
+//    auto f = new Netizen(id);
+//    send(f->toJson());
+//}
 
-void Client::addFriend(long id)
-{
-    auto f = new Netizen(id);
-    f->setConversionType(7);
-    send(f->toJson());
-}
+//void Client::addFriend(long id)
+//{
+//    auto f = new Netizen(id);
+//    f->setConversionType(7);
+//    send(f->toJson());
+//}
 
-void Client::acceptAddFriendRequest(Netizen *f)
-{
-    f->setConversionType(8);
-    send(f->toJson());
-}
+//void Client::acceptAddFriendRequest(Netizen *f)
+//{
+//    f->setConversionType(8);
+//    send(f->toJson());
+//}
 
 void Client::Register(long id, string nickname, string password)
 {
@@ -176,10 +176,10 @@ void Client::clearAccountInfo()
     emit _clientUI->clearAccountInfo();
 }
 
-void Client::showFindInfo(QString nickName, long id)
-{
-    emit _searchUI->showFindInfo(nickName, QString::number(id, 10));
-}
+//void Client::showFindInfo(QString nickName, long id)
+//{
+//    emit _searchUI->showFindInfo(nickName, QString::number(id, 10));
+//}
 
 void Client::showNewFriendInfo(QString nickName, long id)
 {
@@ -191,10 +191,10 @@ void Client::showFriendMsg(QString id, QString msg, QString roomid)
     emit _clientUI->showFriendMsg(id, msg, roomid);
 }
 
-void Client::selectFriend(long friendID)
-{
-    netizen->selectFriend(friendID);
-}
+//void Client::selectFriend(long friendID)
+//{
+//    netizen->selectFriend(friendID);
+//}
 
 bool Client::parseObject()
 {
@@ -240,10 +240,10 @@ void Client::startClientUI()
     emit _clientUI->showClientUI();
 }
 
-void Client::startSearchUI()
-{
-    emit _searchUI->showSearchUI();
-}
+//void Client::startSearchUI()
+//{
+//    emit _searchUI->showSearchUI();
+//}
 void Client::send(Conversion *conversion)
 {
     boost::asio::post(m_io_context,
@@ -271,15 +271,15 @@ void Client::do_send(Conversion *conversion)
     });
 }
 
-SearchUi *Client::getSearchUI() const
-{
-    return _searchUI;
-}
+//SearchUi *Client::getSearchUI() const
+//{
+//    return _searchUI;
+//}
 
-void Client::setSearchUI(SearchUi *searchUI)
-{
-    _searchUI = searchUI;
-}
+//void Client::setSearchUI(SearchUi *searchUI)
+//{
+//    _searchUI = searchUI;
+//}
 
 ClientUI *Client::getClientUI() const
 {

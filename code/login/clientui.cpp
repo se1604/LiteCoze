@@ -1,6 +1,7 @@
 #include "clientui.h"
 #include "client.h"
 #include "netizen.h"
+#include "privatechat.h"
 
 ClientUI *ClientUI::_instance = nullptr;
 
@@ -20,7 +21,7 @@ ClientUI *ClientUI::getInstance()
 
 void ClientUI::selectFriend(QString friendID)
 {
-    Client::getInstance()->selectFriend(friendID.toLong());
+    PrivateChat::getInstance()->selectFriend(friendID.toLong());
 }
 
 void ClientUI::sendNewMessage(QString content)
@@ -30,13 +31,13 @@ void ClientUI::sendNewMessage(QString content)
 
 void ClientUI::startSearchUI()
 {
-    Client::getInstance()->startSearchUI();
+    PrivateChat::getInstance()->startSearchUI();
 }
 
 void ClientUI::acceptAddFriendRequest(QString id, QString nickname)
 {
     auto f = new Netizen(id.toLong(), nickname.toStdString(), 1);
-    Client::getInstance()->acceptAddFriendRequest(f);
+    PrivateChat::getInstance()->acceptAddFriendRequest(f);
 }
 
 void ClientUI::flushAccountInfo()
