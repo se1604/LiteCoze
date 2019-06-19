@@ -2,6 +2,7 @@
 #define NETIZEN_H
 #include <string>
 #include <vector>
+#include <deque>
 
 class PrivateChatRoom;
 class NetworkTransmission;
@@ -41,7 +42,7 @@ private:
     std::string m_nickname;
     std::string m_avatar;
     std::vector<Netizen*> _friends;
-    std::vector<Netizen*> _friendRequests;
+    std::deque<Netizen*> _friendRequests;
     std::vector<PrivateChatRoom *> _privateChatRooms;
     NetworkTransmission *_networkTransmission;
     Conversion *_conversion;

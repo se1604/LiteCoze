@@ -15,6 +15,7 @@ NetworkTransmission::NetworkTransmission(tcp::socket socket): m_socket(std::move
 
 void NetworkTransmission::sendAccountInfo()
 {
+    _netizen->setConversionType(2);
     send(_netizen->toJson());
 }
 
