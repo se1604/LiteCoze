@@ -50,9 +50,10 @@ void Netizen::sendAllOffLineMessages()
 
 void Netizen::sendAllOffLineFriendRequest()
 {
-    for(auto f : _friendRequests){
-        f->setConversionType(7);
-        _networkTransmission->send(f->toJson());
+    while (!_friendRequests.empty()) {
+        _friendRequests.front()->setConversionType(7);
+        _networkTransmission->send(_friendRequests.front()->toJson());
+        _friendRequests.pop_front();
     }
 }
 

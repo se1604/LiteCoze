@@ -1,10 +1,13 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.3
+import QtQuick.LocalStorage 2.0
 
 Item {
     //好友或群聊框
-    Rectangle
 
+    property  bool ifmee: false
+
+    Rectangle
     {
         id: friendOrGroup
         width: parent.width * 0.25
@@ -14,6 +17,29 @@ Item {
 
         border.width: 1
         border.color: "#E4EAEA"
+
+        //离线消息加载到本地数据库
+        Connections {
+            target: client
+            onShowFriendMsg: {
+                //            console.log("ff")
+//                saveData()
+
+                function saveData(){
+                    console.log("a")
+                    console.log(id)
+                    var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
+                    db.transaction(
+                                function(tx) {
+//                                    tx.executeSql('DROP TABLE ' + 'ab'+roomid);
+                                    tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+roomid +'(message TEXT, me BOOL)');
+                                    tx.executeSql('INSERT INTO ' + 'ab'+roomid + ' VALUES(?,?)', [msg, ifmee]);
+//                                    tx.executeSql('INSERT INTO ' + 'ab'+topChatRoomid.text + ' VALUES(?,?)', [myItem.message, myItem.me]);
+                                }
+                                )
+                }
+            }
+        }
 
         //下划线
         Rectangle {
@@ -155,29 +181,82 @@ Item {
     }
 
     //列表框
-      //好友model和delegate
+    //好友model和delegate
 
     //显示好友信息在列表上
     Connections {
         target: client
         onShowAccountInfo: {
             console.log("ff")
+//            memberListModel.clear()
+            memberListModel.append({"name":nickName, "motto":id, "roomid":roomid})
+        }
+    }
+
+    Connections {
+        target: client
+        onClearAccountInfo: {
+//            console.log("ff")
             memberListModel.clear()
-            memberListModel.append({"name":nickName, "motto":id})
         }
     }
 
     ListModel {
         id: memberListModel
 
-//        ListElement {
-//            name: "啊爷"
-//            motto: "你好啊。。"
+//                ListElement {
+//                    name: "啊爷"
+//                    motto: "你好啊。。"
+//                }
+
+//                ListElement {
+//                    name: "小明"
+//                    motto: "一起跨年哦"
+//                }
+
+//        Component.onCompleted: loadData()
+//        Component.onDestruction: saveData()
+
+//        function saveData(){
+//            var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
+//            db.transaction(
+//                        function(tx) {
+//                            tx.executeSql('DROP TABLE FriendList');
+//                            tx.executeSql('CREATE TABLE IF NOT EXISTS FriendList(motto TEXT primary key, name TEXT)');
+//                            var index = 0;
+//                            while (index < memberListModel.count) {
+//                                var myItem = memberListModel.get(index);
+//                                tx.executeSql('INSERT INTO FriendList VALUES(?,?)', [myItem.motto, myItem.name]);
+//                                index++;
+//                            }
+//                        }
+//                        )
 //        }
 
-//        ListElement {
-//            name: "小明"
-//            motto: "一起跨年哦"
+//        function loadData(){
+//            var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
+//            db.transaction(
+//                        function(tx) {
+//                            // Create the database if it doesn't already exist
+////                            tx.executeSql('DROP TABLE FriendList');
+//                            tx.executeSql('CREATE TABLE IF NOT EXISTS FriendList(motto TEXT primary key, name TEXT)');
+
+//                            var rs = tx.executeSql('SELECT * FROM FriendList');
+//                            var index = 0;
+//                            if (rs.rows.length > 0) {
+//                                var index = 0;
+//                                while (index < rs.rows.length) {
+//                                    var myItem = rs.rows.item(index);
+//                                    memberListModel.append( {
+//                                                       "motto": myItem.motto,
+//                                                       "name": myItem.name });
+//                                    index++;
+//                                }
+//                            } else {
+
+//                            }
+//                        }
+//                        )
 //        }
     }
 
@@ -199,7 +278,7 @@ Item {
                 }
                 onClicked: {
                     chatModle.clear()
-                    chatModle.append({"name":name, "id":motto})
+                    chatModle.append({"name":name, "id":motto, "roomid":roomid})
                     chatListView.model = chatModle
                     chatListView.delegate = chatComponentDelegate
                 }
@@ -244,7 +323,7 @@ Item {
         }
     }
 
-      //群model和delegate
+    //群model和delegate
     ListModel {
         id: groupListModel
 
@@ -321,8 +400,8 @@ Item {
         }
     }
 
-//    聊天框
-//      delegate
+    //    聊天框
+    //      delegate
     Component {
         id: chatComponentDelegate
 
@@ -333,10 +412,11 @@ Item {
 
             topChatText.text: name
             topChatId.text: id
+            topChatRoomid.text: roomid
         }
     }
 
-      //view
+    //view
     Rectangle {
         id: chatRectangleView
         width: parent.width - friendOrGroup.width

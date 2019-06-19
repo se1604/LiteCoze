@@ -59,7 +59,12 @@ Window {
                 color: "white"
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: viewB.delegate = chatCo
+                    onClicked: {
+                        search.visible = true
+                        newFriend.visible = true
+                        viewB.delegate = chatCo
+                        client.flushAccountInfo()
+                    }
                 }
             }
             Text {
@@ -70,7 +75,11 @@ Window {
                 color: "white"
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: viewB.delegate = circleCo
+                    onClicked: {
+                        search.visible = false
+                        newFriend.visible = false
+                        viewB.delegate = circleCo
+                    }
                 }
             }
         }
@@ -115,11 +124,12 @@ Window {
             width: 30
             height: 30
             anchors.left: parent.left
-            anchors.leftMargin: 4
+            anchors.leftMargin: 90
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 4
             color: "red"
             radius: 180
+            visible: true
 
             MouseArea {
                 anchors.fill: parent
@@ -140,6 +150,7 @@ Window {
             anchors.bottom: search.bottom
             color: "blue"
             radius: 180
+            visible: true
             Text {
                 id: newFriendText
                 anchors.centerIn: parent
@@ -239,6 +250,9 @@ Window {
                     anchors.rightMargin: 5
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 5
+                    onClicked: {
+                        memberListModel.remove(listRecView.currentIndex)
+                    }
                 }
                 Button {
                     width: 50
@@ -250,6 +264,7 @@ Window {
                     anchors.bottomMargin: 5
                     onClicked: {
                         client.acceptAddFriendRequest(mottoText.text, nameText.text)
+                        memberListModel.remove(listRecView.currentIndex)
                     }
                 }
             }

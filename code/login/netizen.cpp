@@ -174,9 +174,10 @@ void Netizen::setConversionType(int type)
 }
 
 void Netizen::printInfo(){
+    Client::getInstance()->clearAccountInfo();
     cout << "所有的好友信息： " << endl;
     for(auto f : _friends){
-        Client::getInstance()->showAccountInfo(QString::fromStdString(f->m_nickname), f->m_id);
+        Client::getInstance()->showAccountInfo(QString::fromStdString(f->m_nickname), f->m_id, f->_privateChatRooms[0]->id());
     }
 }
 
@@ -211,3 +212,5 @@ long Netizen::id() const
 {
     return m_id;
 }
+
+

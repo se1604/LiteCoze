@@ -161,9 +161,19 @@ void Client::do_accept_body()
     });
 }
 
-void Client::showAccountInfo(QString nickName, long id)
+void Client::showAccountInfo(QString nickName, long id, long roomid)
 {
-    emit _clientUI->showAccountInfo(nickName, QString::number(id, 10));
+    emit _clientUI->showAccountInfo(nickName, QString::number(id, 10), QString::number(roomid, 10));
+}
+
+void Client::flushAccountInfo()
+{
+    netizen->printInfo();
+}
+
+void Client::clearAccountInfo()
+{
+    emit _clientUI->clearAccountInfo();
 }
 
 void Client::showFindInfo(QString nickName, long id)
@@ -176,9 +186,9 @@ void Client::showNewFriendInfo(QString nickName, long id)
     emit _clientUI->showNewFriendInfo(nickName, QString::number(id, 10));
 }
 
-void Client::showFriendMsg(QString id, QString msg)
+void Client::showFriendMsg(QString id, QString msg, QString roomid)
 {
-    emit _clientUI->showFriendMsg(id, msg);
+    emit _clientUI->showFriendMsg(id, msg, roomid);
 }
 
 void Client::selectFriend(long friendID)

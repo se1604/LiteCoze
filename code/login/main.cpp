@@ -1,4 +1,6 @@
+//19.6.17 duHongpeng
 //19.6.18 duHongpeng
+//19.6.19 duHongpeng
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <iostream>

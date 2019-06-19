@@ -27,10 +27,12 @@ public:
     void sendNewMessage(std::string content);
     void do_accept_head();
     void do_accept_body();
-    void showAccountInfo(QString nickName, long id);
+    void showAccountInfo(QString nickName, long id, long roomid);
+    void flushAccountInfo();
+    void clearAccountInfo();
     void showFindInfo(QString nickName, long id);
     void showNewFriendInfo(QString nickName, long id);
-    void showFriendMsg(QString id, QString msg);
+    void showFriendMsg(QString id, QString msg, QString roomid);
     void showAllOffLineMessages(Conversion *conversio);
     void selectFriend(long friendID);
     void send(Conversion *conversion);

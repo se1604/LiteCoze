@@ -44,6 +44,7 @@ private:
     std::vector<Netizen*> _friends;
     std::deque<Netizen*> _friendRequests;
     std::vector<PrivateChatRoom *> _privateChatRooms;
+    std::vector<Message*> _offLinesMessage;
     NetworkTransmission *_networkTransmission;
     Conversion *_conversion;
 };

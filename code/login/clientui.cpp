@@ -39,6 +39,11 @@ void ClientUI::acceptAddFriendRequest(QString id, QString nickname)
     Client::getInstance()->acceptAddFriendRequest(f);
 }
 
+void ClientUI::flushAccountInfo()
+{
+    Client::getInstance()->flushAccountInfo();
+}
+
 QString ClientUI::id() const
 {
     return m_id;

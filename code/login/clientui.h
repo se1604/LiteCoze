@@ -18,14 +18,16 @@ public:
    Q_INVOKABLE void sendNewMessage(QString content);
    Q_INVOKABLE void startSearchUI();
    Q_INVOKABLE void acceptAddFriendRequest(QString id, QString nickname);
+   Q_INVOKABLE void flushAccountInfo();
 
    QString id() const;
    void setId(const QString &id);
 signals:
    void idChanged();
    void showClientUI();
-   void showAccountInfo(QString nickName, QString id);
-   void showFriendMsg(QString id, QString msg);
+   void showAccountInfo(QString nickName, QString id, QString roomid);
+   void clearAccountInfo();
+   void showFriendMsg(QString id, QString msg, QString roomid);
    void showNewFriendInfo(QString nickName, QString id);
 private:
    static ClientUI * _instance;

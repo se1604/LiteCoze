@@ -119,7 +119,7 @@ bool Message::parseJson(Conversion * conversion){
 
     long friendID = netizen->friendID(roomID);
 
-    Client::getInstance()->showFriendMsg(QString::number(friendID, 10), QString::fromStdString(m_content));
+    Client::getInstance()->showFriendMsg(QString::number(friendID, 10), QString::fromStdString(m_content), QString::number(roomID, 10));
 
     //测试
     std::cout << "time: " << m_time << ": ";

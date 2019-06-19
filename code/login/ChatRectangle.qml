@@ -1,10 +1,12 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.3
+import QtQuick.LocalStorage 2.0
 
 Item {
     id: chatItem
     property alias topChatText: topChatText
     property alias topChatId: topChatId
+    property alias topChatRoomid: topChatRoomid
     property  bool ifme
 
 
@@ -37,13 +39,23 @@ Item {
 //            x: 200
             anchors.verticalCenter: parent.verticalCenter
         }
+
+        Text {
+            id: topChatRoomid
+            font.pointSize: 16
+
+            anchors.left: topChatId.right
+            anchors.leftMargin: 10
+//            x: 200
+            anchors.verticalCenter: parent.verticalCenter
+        }
     }
 
     Connections {
         target: client
         onShowFriendMsg: {
 //            console.log("ff")
-            if(id === topChatId.text){
+            if(roomid === topChatRoomid.text){
                 ifme = false
                 midChatModel.append({"message":msg, "me": ifme})
             }
@@ -53,6 +65,54 @@ Item {
     //聊天框中间显示聊天内容
     ListModel {
         id: midChatModel
+
+        Component.onCompleted: loadData()
+        Component.onDestruction: saveData()
+
+        function saveData(){
+            console.log("cc")
+            var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
+            db.transaction(
+                        function(tx) {
+                            tx.executeSql('DROP TABLE ' + 'ab'+topChatRoomid.text);
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+topChatRoomid.text +'(message TEXT, me BOOL)');
+                            var index = 0;
+                            while (index < midChatModel.count) {
+                                var myItem = midChatModel.get(index);
+                                tx.executeSql('INSERT INTO ' + 'ab'+topChatRoomid.text + ' VALUES(?,?)', [myItem.message, myItem.me]);
+                                index++;
+                            }
+                        }
+                        )
+        }
+
+        function loadData(){
+            var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
+            db.transaction(
+                        function(tx) {
+//                            tx.executeSql('DROP TABLE ' + 'ab'+topChatRoomid.text);
+                            // Create the database if it doesn't already exist
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+topChatRoomid.text +'(message TEXT, me BOOL)');
+
+                            var rs = tx.executeSql('SELECT * FROM ' + 'ab'+topChatRoomid.text);
+                            console.log("aa")
+                            var index = 0;
+                            if (rs.rows.length > 0) {
+                                var index = 0;
+                                console.log("bb")
+                                while (index < rs.rows.length) {
+                                    var myItem = rs.rows.item(index);
+                                    midChatModel.append( {
+                                                       "message": myItem.message,
+                                                       "me": myItem.me});
+                                    index++;
+                                }
+                            } else {
+
+                            }
+                        }
+                        )
+        }
     }
     Component {
         id: midChatDelegate
@@ -170,7 +230,7 @@ Item {
 
                 onClicked: {
                     ifme = true
-                    midChatModel.append({"message":bottTextArea.text, "me": ifme})
+                    midChatModel.append({"message":bottTextArea.text, "me": true})
 
                     client.selectFriend(topChatId.text)
                     client.sendNewMessage(bottTextArea.text)
