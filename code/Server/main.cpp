@@ -1,9 +1,10 @@
 #include <iostream>
 #include <thread>
 #include "netizen.h"
-#include "privatechat.h"
-#include "manager.h"
+#include "server.h"
+#include "accountmanager.h"
 #include "dbbroker.h"
+#include "privatechat.h"
 
 using namespace std;
 using boost::asio::ip::tcp;
@@ -14,11 +15,13 @@ int main()
     try {
 
         tcp::endpoint endpoint(tcp::v6(), std::atoi("8080"));
-        PrivateChat* privateChat = new PrivateChat(io_context, endpoint);
+        Server* server = new Server(io_context, endpoint);
 
         DBBroker::getInstance()->initAccount();
-        Manager::getInstance()->initFriend();
-        privateChat->accept();
+        auto privateChat = new PrivateChat();
+        privateChat->initFriend();
+        //AccountManager::getInstance()->initFriend();
+        server->accept();
 
         io_context.run();
     } catch (domain_error e) {

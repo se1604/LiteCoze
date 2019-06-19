@@ -1,6 +1,6 @@
 #include "dbbroker.h"
 #include <sstream>
-#include "manager.h"
+#include "accountmanager.h"
 
 DBBroker* DBBroker::_instance = nullptr;
 
@@ -112,12 +112,12 @@ void DBBroker::initFrinedInfo(Netizen *netizen)
         if(netizen1_id==temp_id)
         {
             auto n=new Netizen();
-            n=Manager::getInstance()->getNetizen(netizen2_id);
+            n=AccountManager::getInstance()->getNetizen(netizen2_id);
             if(netizen->isAlreadyFriend(n)==false)
                 netizen->addFriend(n,room_id);
         }else if(netizen2_id==temp_id){
             auto n=new Netizen();
-            n=Manager::getInstance()->getNetizen(netizen1_id);
+            n=AccountManager::getInstance()->getNetizen(netizen1_id);
             if(netizen->isAlreadyFriend(n)==false)
                 netizen->addFriend(n,room_id);
         }

@@ -2,7 +2,7 @@
 #include "conversion.h"
 #include "netizen.h"
 #include "message.h"
-#include "manager.h"
+#include "accountmanager.h"
 #include <iostream>
 
 extern boost::asio::io_context io_context;
@@ -82,7 +82,7 @@ bool NetworkTransmission::parseObject()
     if(_recentlyAcceptItem->getType() == 1){
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);
-        _netizen = Manager::getInstance()->checkAccount(netizen, this);
+        _netizen = AccountManager::getInstance()->checkAccount(netizen, this);
         if(_netizen){
             sendAccountInfo();
             _netizen->sendAllOffLineMessages();
@@ -100,7 +100,7 @@ bool NetworkTransmission::parseObject()
     }else if(_recentlyAcceptItem->getType() == 4) {
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);
-        auto f = Manager::getInstance()->findNetizen(netizen);
+        auto f = AccountManager::getInstance()->findNetizen(netizen);
         delete netizen;
         netizen = nullptr;
         if(f){
@@ -115,17 +115,17 @@ bool NetworkTransmission::parseObject()
         //register
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);
-        Manager::getInstance()->addNetizen(netizen);
+        AccountManager::getInstance()->addNetizen(netizen);
         netizen->addAccount();
         //DBBroker::getInstance()->addAccountTODB(netizen);
     }else if(_recentlyAcceptItem->getType() == 7) {
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);
-        auto f = Manager::getInstance()->findNetizen(netizen);
+        auto f = AccountManager::getInstance()->findNetizen(netizen);
         delete netizen;
         netizen = nullptr;
         if(f){
-            f->addFriendRequest(_netizen);
+            f->dealAddFriendRequest(_netizen);
             //send(f->toSimpleJson());
             return true;
         } else{
@@ -135,7 +135,7 @@ bool NetworkTransmission::parseObject()
     }else if(_recentlyAcceptItem->getType() == 8) {
         auto netizen = new Netizen();
         netizen->parseJson(_recentlyAcceptItem);
-        auto f = Manager::getInstance()->findNetizen(netizen);
+        auto f = AccountManager::getInstance()->findNetizen(netizen);
         delete netizen;
         netizen = nullptr;
         if(f){

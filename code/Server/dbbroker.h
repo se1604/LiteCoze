@@ -5,18 +5,18 @@
 #include <mysql/mysql.h>
 #include "netizen.h"
 
-class Manager;
+class AccountManager;
 class DBBroker
 {
 public:
     static DBBroker* getInstance();
     ~DBBroker();
-    bool connect();
+    bool connect();//连接数据库
     void initAccount();//初始化所有netizen的账户信息
-    long stolong(std::string str);
+    long stolong(std::string str);//string转化为long
     void initFrinedInfo(Netizen *netizen);//初始化netizen所有好友信息
-    void addFriendTODB(long room,long n1_id,long n2_id);
-    void addAccountTODB(long id,std::string pw,std::string name);
+    void addFriendTODB(long room,long n1_id,long n2_id);//添加好友关系到数据库
+    void addAccountTODB(long id,std::string pw,std::string name);//添加注册的账户信息到数据库
 private:
     DBBroker();
     MYSQL *_connect;//数据库连接的句柄

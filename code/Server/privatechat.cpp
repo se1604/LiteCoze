@@ -1,50 +1,46 @@
 #include "privatechat.h"
+
 #include <iostream>
-#include "networktransmission.h"
+#include <fstream>
+
+#include "accountmanager.h"
 
 using namespace std;
-using boost::asio::ip::tcp;
 
-PrivateChat::PrivateChat(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint):
-    m_acceptor(io_context, endpoint)
+PrivateChat::PrivateChat()
 {
 
 }
 
-void PrivateChat::accept()
+void PrivateChat::initFriend()
 {
-    m_acceptor.async_accept(
-                [this](boost::system::error_code ec, tcp::socket socket)
+    AccountManager::getInstance()->initFriend();
+}
+
+long PrivateChat::allocatePrivateChatRoomID()
+{
+    long number;
+    ifstream ifs("../allocate");
+    if (ifs.fail())
     {
-        if (!ec)
-        {
-            std::cout << "连接成功"<<std::endl;
-            //auto networkTransmission = new NetworkTransmission(std::move(socket));
-            checkLoginAccount(std::move(socket));
-        }
-        accept();
-    });
+        cout<<"打开文件错误!"<<endl;
+        exit(0);
+    }
+    cout<<"打开文件成功!"<<endl;
+    ifs >> number;
+    cout<<number<<endl;
+    ifs.close();
 
+    ofstream ofs("../allocate");
+    if (ofs.fail())
+    {
+        cout<<"打开文件错误!"<<endl;
+        exit(0);
+    }
+    cout<<"打开文件成功!"<<endl;
+
+    number++;
+    ofs<<number;
+    ofs.close();
+    return number;
 }
-
-void PrivateChat::checkLoginAccount(tcp::socket socket)
-{
-    auto networkTransmission = new NetworkTransmission(std::move(socket));
-    transferItem(networkTransmission);
-    //sendAccountInfo(networkTransmission);
-    //transferOnLineMessage(networkTransmission);
-}
-
-//void PrivateChat::sendAccountInfo(NetworkTransmission *network)
-//{
-//    network->sendAccountInfo();
-
-//}
-
-void PrivateChat::transferItem(NetworkTransmission *network)
-{
-    network->do_accept_head();
-
-}
-
-
