@@ -20,11 +20,11 @@ public:
     std::size_t body_length() const;
     void body_length(std::size_t new_length);
     std::size_t length() const;
-    bool decode_header();
-    void encode_header();
+    bool decode_header();//对头部信息进行解码
+    void encode_header();//对头部信息进行编码
 
-    int decode_type();
-    void encode_type();
+    int decode_type();//对信息类型进行解码
+    void encode_type();//对信息类型进行编码
     void setType(int type);
     int getType();
 

@@ -1,5 +1,5 @@
 #include "netizen.h"
-#include "manager.h"
+#include "accountmanager.h"
 #include "conversion.h"
 #include "privatechatroom.h"
 #include "message.h"
@@ -8,6 +8,7 @@
 #include <memory>
 #include <sstream>
 #include "networktransmission.h"
+#include "privatechat.h"
 
 #include "json/json.h"
 
@@ -17,7 +18,7 @@ Netizen::Netizen(long id,string password, std::string nickname):
     m_id{id},m_password{password}, m_nickname{nickname}
 {
     _networkTransmission = nullptr;
-    Manager* manager = Manager::getInstance();
+    AccountManager* manager = AccountManager::getInstance();
     manager->addNetizen(this);
     _conversion = new Conversion();
     _conversion->setType(2);
@@ -71,7 +72,7 @@ void Netizen::addNewMessageToRoom(Message *message)
     }
 }
 
-void Netizen::addFriendRequest(Netizen *netizen)
+void Netizen::dealAddFriendRequest(Netizen *netizen)
 {
     if(isOnLine()){
         netizen->setConversionType(7);
@@ -94,8 +95,12 @@ void Netizen::addFriend(Netizen *f, long roomID)
 
 void Netizen::acceptAddFriendRequest(Netizen *f)
 {
-    long roomID = Manager::getInstance()->allocateRoomID();
+    auto privateChat = new PrivateChat();
+    long roomID = privateChat->allocatePrivateChatRoomID();
     addFriend(f, roomID);
+    long n1=this->id();
+    long n2=f->id();
+    DBBroker::getInstance()->addFriendTODB(roomID,n1,n2);
     if(_networkTransmission){
         f->setConversionType(8);
        _networkTransmission->send(f->toJson(roomID));
@@ -235,6 +240,24 @@ bool Netizen::findNetizen(Netizen *netizen)
         return true;
     }
     return false;
+}
+
+bool Netizen::isAlreadyFriend(Netizen *netizen)
+{
+    for(auto f:_friends){
+        if(f->id()==netizen->id()){
+            return true;
+        }
+    }
+    return false;
+}
+
+void Netizen::addAccount()
+{
+    long id=this->m_id;
+    std::string psw=this->m_password;
+    std::string name=this->m_nickname;
+    DBBroker::getInstance()->addAccountTODB(id,psw,name);
 }
 
 void Netizen::printInfo(){
