@@ -160,7 +160,7 @@ void DBBroker::initGroupInfo(Netizen *netizen)
                     std::string temp=m_row[i];
                     room_id=stolong(temp);
                 }else if(i==1){
-                   name=m_row[i];
+                    name=m_row[i];
                 }
             }
         }
@@ -206,9 +206,9 @@ void DBBroker::addFriendTODB(long room, long n1_id, long n2_id)
                               "(id,netizen1_id,netizen2_id) values('%ld',"
                               "'%ld','%ld')",room,n1_id,n2_id);
     if(mysql_query(_connect,sql)){
-        std::cout<<"插入数据失败"<<std::endl;
+        std::cout<<"添加好友失败"<<std::endl;
     }else {
-        std::cout<<"插入数据成功"<<std::endl;
+        std::cout<<"添加好友成功"<<std::endl;
     }
 }
 
@@ -220,8 +220,62 @@ void DBBroker::addAccountTODB(long id, std::string pw, std::string name)
                               " (id,password,nickname) values('%ld',"
                               "'%s','%s')",id,pw.c_str(),name.c_str());
     if(mysql_query(_connect,sql)){
-        std::cout<<"插入数据失败"<<std::endl;
+        std::cout<<"注册账户失败"<<std::endl;
     }else {
-        std::cout<<"插入数据成功"<<std::endl;
+        std::cout<<"注册账户成功"<<std::endl;
+    }
+}
+
+void DBBroker::addGroupTODB(long id, std::string name,long netizen_id)
+{
+    char sql_1[1024]={0};
+
+    snprintf(sql_1,sizeof (sql_1),"insert into grouproom"
+                                  " (id,name) values('%ld',"
+                                  "'%s')",id,name.c_str());
+    if(mysql_query(_connect,sql_1)){
+        std::cout<<"创建群失败"<<std::endl;
+    }else {
+        std::cout<<"创建群成功"<<std::endl;
+    }
+    addGroupInfo(id,netizen_id);
+    createMemberList(id);
+    addMember(id,netizen_id);
+}
+
+void DBBroker::createMemberList(long id)
+{
+    char sql_3[1024]={0};
+    std::string s=longToS(id);
+    snprintf(sql_3,sizeof (sql_3),"create table %s(netizen_id BIGINT,foreign key (netizen_id) references netizen(id))",s.c_str());
+    if(mysql_query(_connect,sql_3)){
+        std::cout<<"创建失败"<<std::endl;
+    }else {
+        std::cout<<"创建成功"<<std::endl;
+    }
+}
+
+void DBBroker::addGroupInfo(long id, long netizen_id)
+{
+    char sql_2[1024]={0};
+    snprintf(sql_2,sizeof (sql_2),"insert into netizen_grouproom"
+                                  "(grouproom_id,netizen_id) values ("
+                                  "'%ld','%ld')",id,netizen_id);
+    if(mysql_query(_connect,sql_2)){
+        std::cout<<"插入失败"<<std::endl;
+    }else {
+        std::cout<<"插入成功"<<std::endl;
+    }
+}
+
+void DBBroker::addMember(long id, long netizen_id)
+{
+    char sql[1024]={0};
+    std::string s=longToS(id);
+    snprintf(sql,sizeof (sql),"insert into %s (netizen_id) values ('%ld')",s.c_str(),netizen_id);
+    if(mysql_query(_connect,sql)){
+        std::cout<<"插入失败"<<std::endl;
+    }else {
+        std::cout<<"插入成功"<<std::endl;
     }
 }
