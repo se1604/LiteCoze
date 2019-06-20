@@ -13,6 +13,7 @@ public:
     Netizen* findNetizen(Netizen *netizen);//查找网民
     void addNetizen(Netizen *netizen);
     void initFriend();
+    void initGroup();
     Netizen *getNetizen(long id);//通过网民id号找到网民
 
     void printInfo();//测试代码

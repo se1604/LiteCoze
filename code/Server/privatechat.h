@@ -7,6 +7,7 @@ class PrivateChat
 public:
     PrivateChat();
     void initFriend();//初始化所有网民之间的好友关系
+    void initGroup();//初始化每个网民加入的群
     long allocatePrivateChatRoomID();//每当添加一段好友关系就会分配私聊房间的id号
 };
 

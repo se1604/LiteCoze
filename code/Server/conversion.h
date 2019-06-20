@@ -8,7 +8,7 @@ public:
     friend class Message;
     Conversion();
     enum { header_length = 4 };
-    enum { type_length = 1 };
+    enum { type_length = 2 };
     enum { max_body_length = 512 };
 
     const char* data() const;

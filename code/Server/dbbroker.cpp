@@ -78,6 +78,16 @@ long DBBroker::stolong(std::string str){
     return result;
 }
 
+std::string DBBroker::longToS(long id)
+{
+    std::ostringstream os;
+    os<<id;
+    std::string result;
+    std::istringstream is("g"+os.str());
+    is>>result;
+    return result;
+}
+
 void DBBroker::initFrinedInfo(Netizen *netizen)
 {
     long temp_id=netizen->id();
@@ -86,7 +96,7 @@ void DBBroker::initFrinedInfo(Netizen *netizen)
     long netizen1_id=0;
     long netizen2_id=0;
 
-    mysql_query(_connect, "SELECT * FROM room");
+    mysql_query(_connect, "SELECT * FROM privateroom");
     _result = mysql_store_result(_connect);
     num_clo = mysql_num_fields(_result);
 
@@ -126,10 +136,73 @@ void DBBroker::initFrinedInfo(Netizen *netizen)
     //    mysql_close(_connect);
 }
 
+void DBBroker::initGroupInfo(Netizen *netizen)
+{
+    char sql[1024]={0};
+    unsigned num_clo;
+    long temp_id=netizen->id();
+    long room_id=0;
+    long netizen_id=0;
+    std::string name;
+
+    snprintf(sql,sizeof (sql),"select grouproom.id,grouproom.name from grouproom,netizen_grouproom where netizen_grouproom.netizen_id='%ld' and netizen_grouproom.grouproom_id=grouproom.id",temp_id);
+
+    mysql_query(_connect, sql);
+    _result = mysql_store_result(_connect);
+    num_clo = mysql_num_fields(_result);
+
+    while ((m_row = mysql_fetch_row(_result)))
+    {
+        for (unsigned i=0; i < num_clo;i++)
+        {
+            if(m_row[i]){
+                if(i==0){
+                    std::string temp=m_row[i];
+                    room_id=stolong(temp);
+                }else if(i==1){
+                   name=m_row[i];
+                }
+            }
+        }
+        std::cout<<temp_id<<"的群信息"<<std::endl;
+        std::cout<<"群号"<<room_id<<"群名"<<name<<std::endl;//测试代码
+        queryMemberOfGroup(room_id);
+    }
+    mysql_free_result(_result);
+}
+
+void DBBroker::queryMemberOfGroup(long id)
+{
+    unsigned num;
+    char sql[1024]={0};
+    long netizen_id=0;
+    std::string s=longToS(id);
+
+    snprintf(sql,sizeof (sql),"select * from %s",s.c_str());
+    mysql_query(_connect,sql);
+    _result=mysql_store_result(_connect);
+    num=mysql_num_fields(_result);
+
+    while ((m_row = mysql_fetch_row(_result)))
+    {
+        for (unsigned i=0; i < num;i++)
+        {
+            if(m_row[i]){
+                std::string temp=m_row[i];
+                netizen_id=stolong(temp);
+            }
+        }
+        auto n=new Netizen();
+        n=AccountManager::getInstance()->getNetizen(netizen_id);
+        n->printInfo();
+    }
+    mysql_free_result(_result);
+}
+
 void DBBroker::addFriendTODB(long room, long n1_id, long n2_id)
 {
     char sql[1024]={0};
-    snprintf(sql,sizeof (sql),"insert into room"
+    snprintf(sql,sizeof (sql),"insert into privateroom"
                               "(id,netizen1_id,netizen2_id) values('%ld',"
                               "'%ld','%ld')",room,n1_id,n2_id);
     if(mysql_query(_connect,sql)){

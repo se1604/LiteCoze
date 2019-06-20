@@ -84,7 +84,7 @@ int Conversion::decode_type()
     char type[type_length + 1] = "";
     std::strncat(type, m_data + header_length, type_length);//把m_data所指字符串的前type_length个字符添加到type结尾处，覆盖type结尾处的'/0'，实现字符串连接。
     m_type = std::atoi(type);
-    if (m_type >= 10)
+    if (m_type >= 100)
     {
         m_type = 0;
     }

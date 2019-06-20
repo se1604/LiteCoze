@@ -20,7 +20,8 @@ int main()
         DBBroker::getInstance()->initAccount();
         auto privateChat = new PrivateChat();
         privateChat->initFriend();
-        //AccountManager::getInstance()->initFriend();
+        privateChat->initGroup();
+
         server->accept();
 
         io_context.run();

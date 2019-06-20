@@ -17,6 +17,11 @@ void PrivateChat::initFriend()
     AccountManager::getInstance()->initFriend();
 }
 
+void PrivateChat::initGroup()
+{
+    AccountManager::getInstance()->initGroup();
+}
+
 long PrivateChat::allocatePrivateChatRoomID()
 {
     long number;

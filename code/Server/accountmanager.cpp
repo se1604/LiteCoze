@@ -23,6 +23,13 @@ void AccountManager::initFriend()
     }
 }
 
+void AccountManager::initGroup()
+{
+    for(auto n:_netizens){
+        DBBroker::getInstance()->initGroupInfo(n);
+    }
+}
+
 Netizen *AccountManager::getNetizen(long id)
 {
     for(auto n:_netizens){
