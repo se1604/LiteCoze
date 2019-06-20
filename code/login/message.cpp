@@ -17,8 +17,8 @@ using namespace std;
 extern Netizen * netizen;
 
 
-Message::Message(std::string content,PrivateChatRoom *room):
-    m_content{content}, _room{room}
+Message::Message(std::string content,long roomID):
+    m_content{content}, m_roomID{roomID}
 {
     _conversion = new Conversion();
     setTime();
@@ -62,7 +62,7 @@ Conversion *Message::toJson()
 
     root["time"] = m_time;
     root["content"] = m_content;
-    root["roomID"] = _room->id();
+    root["roomID"] = m_roomID;
 
     Json::StreamWriterBuilder writerBuilder;
     unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
@@ -114,8 +114,8 @@ bool Message::parseJson(Conversion * conversion){
     m_content = root["content"].asString();
     long roomID = root["roomID"].asLargestInt();
 
-    _room = netizen->room(roomID);
-    _room->addMessage(this);
+    netizen->room(roomID)->addMessage(this);
+    //_room->addMessage(this);
 
     long friendID = netizen->friendID(roomID);
 

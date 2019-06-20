@@ -14,7 +14,9 @@ SOURCES += \
     dbbroker.cpp \
     server.cpp \
     accountmanager.cpp \
-    privatechat.cpp
+    privatechat.cpp \
+    groupchat.cpp \
+    groupchatroom.cpp
 
 HEADERS += \
     netizen.h \
@@ -25,4 +27,6 @@ HEADERS += \
     dbbroker.h \
     server.h \
     accountmanager.h \
-    privatechat.h
+    privatechat.h \
+    groupchat.h \
+    groupchatroom.h

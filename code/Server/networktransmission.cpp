@@ -3,6 +3,8 @@
 #include "netizen.h"
 #include "message.h"
 #include "accountmanager.h"
+#include "groupchatroom.h"
+
 #include <iostream>
 
 extern boost::asio::io_context io_context;
@@ -85,6 +87,7 @@ bool NetworkTransmission::parseObject()
         _netizen = AccountManager::getInstance()->checkAccount(netizen, this);
         if(_netizen){
             sendAccountInfo();
+            _netizen->sendAccountGroupChatrooms();
             _netizen->sendAllOffLineMessages();
             _netizen->sendAllOffLineFriendRequest();
             return true;
@@ -140,6 +143,47 @@ bool NetworkTransmission::parseObject()
         netizen = nullptr;
         if(f){
             _netizen->acceptAddFriendRequest(f);
+            //f->addFriendRequest(_netizen);
+            //send(f->toSimpleJson());
+            return true;
+        } else{
+//            throw domain_error("检测失败");
+            return false;
+        }
+    }else if (_recentlyAcceptItem->getType() == 9) {
+        auto grc = new GroupChatroom();
+        grc->parseJson(_recentlyAcceptItem);
+        AccountManager::getInstance()->addGroupChatroom(grc);
+    }else if (_recentlyAcceptItem->getType() == 11) {
+        auto gcr = new GroupChatroom();
+        gcr->parseJson(_recentlyAcceptItem);
+        auto g = AccountManager::getInstance()->findGroupChatroom(gcr);
+        delete gcr;
+        gcr = nullptr;
+        if(g){
+            send(g->toJson(12));
+        }
+    }else if(_recentlyAcceptItem->getType() == 13) {
+        auto gcr = new GroupChatroom();
+        gcr->parseJson(_recentlyAcceptItem);
+        auto g = AccountManager::getInstance()->findGroupChatroom(gcr);
+        delete gcr;
+        gcr = nullptr;
+        if(g){
+            g->dealAddGroupChatroomRequest(_netizen);
+            return true;
+        } else{
+//            throw domain_error("检测失败");
+            return false;
+        }
+    }else if(_recentlyAcceptItem->getType() == 14) {
+        auto netizen = new Netizen();
+        long roomID = netizen->parseJson(_recentlyAcceptItem);
+        auto n = AccountManager::getInstance()->findNetizen(netizen);
+        delete netizen;
+        netizen = nullptr;
+        if(n){
+            _netizen->acceptAddGroupChatroomRequest(n, roomID);
             //f->addFriendRequest(_netizen);
             //send(f->toSimpleJson());
             return true;

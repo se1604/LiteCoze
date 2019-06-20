@@ -9,13 +9,14 @@
 #include <sstream>
 #include "networktransmission.h"
 #include "privatechat.h"
+#include "groupchatroom.h"
 
 #include "json/json.h"
 
 using namespace std;
 
 Netizen::Netizen(long id,string password, std::string nickname):
-    m_id{id},m_password{password}, m_nickname{nickname}
+    m_id{id},m_password{password}, m_nickname{nickname}, m_avatar{""}
 {
     _networkTransmission = nullptr;
     AccountManager* manager = AccountManager::getInstance();
@@ -42,10 +43,26 @@ Netizen::~Netizen()
     }
 }
 
+void Netizen::send(Conversion *conversion)
+{
+    _networkTransmission->send(conversion);
+}
+
+void Netizen::sendAccountGroupChatrooms()
+{
+    for(auto room : _groupChatrooms){
+        send(room->allToJson());
+    }
+}
+
 void Netizen::sendAllOffLineMessages()
 {
-    for(auto pcr : _privateChatRooms){
-        pcr->sendAllOffLineMessages(this);
+//    for(auto m : _allOffLineMessages){
+//        sendMessage(m->toJson());
+//    }
+    while (!_allOffLineMessages.empty()) {
+        sendMessage(_allOffLineMessages.front()->toJson());
+        _allOffLineMessages.pop_front();
     }
 }
 
@@ -58,6 +75,13 @@ void Netizen::sendAllOffLineFriendRequest()
     }
 }
 
+void Netizen::sendAllOffLineAddGroupChatroomRequest()
+{
+    for(auto room : _ownGroupChatroom){
+        room->sendAllOffLineAddGroupChatroomRequest();
+    }
+}
+
 void Netizen::sendMessage(Conversion *conversion)
 {
     _networkTransmission->send(conversion);
@@ -65,11 +89,25 @@ void Netizen::sendMessage(Conversion *conversion)
 
 void Netizen::addNewMessageToRoom(Message *message)
 {
-    for(auto prc : _privateChatRooms){
-        if(message->roomID() == prc->id()){
-            prc->addMessage(message);
+    if(message->roomID() < 200000000){
+        for(auto prc : _privateChatRooms){
+            if(message->roomID() == prc->id()){
+                prc->addMessage(message);
+            }
         }
     }
+    else {
+        for(auto grc : _groupChatrooms){
+            if(message->roomID() == grc->id()){
+                grc->addMessage(message);
+            }
+        }
+    }
+}
+
+void Netizen::addNewOffLineMessage(Message *message)
+{
+    _allOffLineMessages.push_back(message);
 }
 
 void Netizen::dealAddFriendRequest(Netizen *netizen)
@@ -111,11 +149,27 @@ void Netizen::acceptAddFriendRequest(Netizen *f)
     }
 }
 
-bool Netizen::parseJson(Conversion *conversion)
+void Netizen::acceptAddGroupChatroomRequest(Netizen *netizen, long roomID)
+{
+    for (auto room : _ownGroupChatroom){
+        if(room->id() == roomID){
+            room->addGroupMember(netizen);
+            if (netizen->isOnLine()){
+                netizen->send(room->allToJson());
+            }
+//            if(_networkTransmission){
+//                netizen->setConversionType(14);
+//               _networkTransmission->send(netizen->toJson(roomID));
+//            }
+        }
+    }
+}
+
+long Netizen::parseJson(Conversion *conversion)
 {
     char* c = conversion->body();
     if (strlen(c) == 0)
-        return false;
+        return 0;
 
 
     JSONCPP_STRING errs;
@@ -135,21 +189,26 @@ bool Netizen::parseJson(Conversion *conversion)
     m_id = root["id"].asLargestInt();
     m_password = root["password"].asString();
     m_nickname = root["nickname"].asString();
+    if(conversion->getType() == 14){
+        long roomID = root["roomID"].asLargestInt();
+        return roomID;
+    }
     //测试
     std::cout << "id: " << m_id << ": ";
     std::cout << "password: " << m_password << std::endl;
     std::cout << "nickname: " << m_nickname << std::endl;
 
-    return true;
+    return 1;
 }
 
 Conversion* Netizen::toJson()
 {
-    Json::Value root, friendID, friendNickname, roomID;
+    Json::Value root, friendID, friendNickname, friendAvatar,roomID;
     std::ostringstream os;
 
     root["id"] = m_id;
     root["nickname"] = m_nickname;
+
 
     if (_conversion->getType() == 2){
         int i = 0;
@@ -157,11 +216,13 @@ Conversion* Netizen::toJson()
             auto f = pcr->getFriend(this);
             friendID[i] = f->m_id;
             friendNickname[i] = f->m_nickname;
+            friendAvatar[i] = f->m_avatar;
             roomID[i] = pcr->id();
             i++;
         }
         root["friendID"] = friendID;
         root["friendNickname"] = friendNickname;
+        root["friendAvatar"] = friendAvatar;
         root["roomID"] = roomID;
     }
 
@@ -234,13 +295,13 @@ bool Netizen::checkAccount(Netizen *netizen, NetworkTransmission* networkTransmi
     return false;
 }
 
-bool Netizen::findNetizen(Netizen *netizen)
-{
-    if(m_id == netizen->m_id){
-        return true;
-    }
-    return false;
-}
+//bool Netizen::findNetizen(Netizen *netizen)
+//{
+//    if(m_id == netizen->m_id){
+//        return true;
+//    }
+//    return false;
+//}
 
 bool Netizen::isAlreadyFriend(Netizen *netizen)
 {
@@ -286,4 +347,14 @@ void Netizen::offLine()
 void Netizen::setConversionType(int type)
 {
     _conversion->setType(type);
+}
+
+std::string Netizen::nickname() const
+{
+    return m_nickname;
+}
+
+std::string Netizen::avatar() const
+{
+    return m_avatar;
 }

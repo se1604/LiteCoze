@@ -8,7 +8,7 @@ PrivateChatRoom::PrivateChatRoom(long id, Netizen *netizen1, Netizen *netizen2):
 
 Conversion* PrivateChatRoom::createNewMessage(std::string content)
 {
-    auto msg = new Message(content, this);
+    auto msg = new Message(content, id());
     addMessage(msg);
     return msg->toJson();
 }

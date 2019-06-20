@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 {
     boost::asio::io_context io_context;
     tcp::resolver resolver(io_context);
-    auto endpoints = resolver.resolve("127.0.0.1", "8080");
+    auto endpoints = resolver.resolve("10.253.157.157", "8080");
     Client *client = Client::getInstance(io_context, endpoints);
 
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

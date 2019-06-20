@@ -20,7 +20,7 @@ void PrivateChat::initFriend()
 long PrivateChat::allocatePrivateChatRoomID()
 {
     long number;
-    ifstream ifs("../allocate");
+    ifstream ifs("../allocatePrivateroomID");
     if (ifs.fail())
     {
         cout<<"打开文件错误!"<<endl;
@@ -31,7 +31,7 @@ long PrivateChat::allocatePrivateChatRoomID()
     cout<<number<<endl;
     ifs.close();
 
-    ofstream ofs("../allocate");
+    ofstream ofs("../allocatePrivateroomID");
     if (ofs.fail())
     {
         cout<<"打开文件错误!"<<endl;

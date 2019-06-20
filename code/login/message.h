@@ -8,7 +8,7 @@ class Conversion;
 class Message
 {
 public:
-    Message(std::string content, PrivateChatRoom *room);
+    Message(std::string content, long roomID);
     Message();
     Conversion* toJson();
     bool parseJson(Conversion * conversion);
@@ -17,7 +17,8 @@ private:
 
     std::string m_time;//发送消息的时间
     std::string m_content;//消息的内容
-    PrivateChatRoom *_room;//消息所属的房间
+    //PrivateChatRoom *_room;//消息所属的房间
+    long m_roomID;
     Conversion *_conversion;
 };
 

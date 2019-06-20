@@ -31,7 +31,8 @@ void PrivateChatRoom::addMessage(Message* message){
         if(_netizen2->isOnLine()){
             _netizen2->sendMessage(message->toJson());
         } else {
-            _netizen2OfflineMessages.push_back(message);
+            _netizen2->addNewOffLineMessage(message);
+            //_netizen2OfflineMessages.push_back(message);
         }
     }
     if(_netizen2->id() == message->senderID()){
@@ -39,25 +40,26 @@ void PrivateChatRoom::addMessage(Message* message){
         if(_netizen1->isOnLine()){
             _netizen1->sendMessage(message->toJson());
         } else {
-            _netizen1OfflineMessages.push_back(message);
+            _netizen1->addNewOffLineMessage(message);
+            //_netizen1OfflineMessages.push_back(message);
         }
     }
 }
 
-void PrivateChatRoom::sendAllOffLineMessages(Netizen *netizen)
-{
-    if(netizen->id() == _netizen1->id()){
-        cout << "length: " << _netizen1OfflineMessages.size() << endl;
-        while(!(_netizen1OfflineMessages.empty())){
-            netizen->sendMessage(_netizen1OfflineMessages.front()->toJson());
-            _netizen1OfflineMessages.pop_front();
-        }
-    } else{
-        cout << "length: " << _netizen2OfflineMessages.size() << endl;
-        while(!(_netizen2OfflineMessages.empty())){
-            netizen->sendMessage(_netizen2OfflineMessages.front()->toJson());
-            _netizen2OfflineMessages.pop_front();
-        }
-    }
+//void PrivateChatRoom::sendAllOffLineMessages(Netizen *netizen)
+//{
+//    if(netizen->id() == _netizen1->id()){
+//        cout << "length: " << _netizen1OfflineMessages.size() << endl;
+//        while(!(_netizen1OfflineMessages.empty())){
+//            netizen->sendMessage(_netizen1OfflineMessages.front()->toJson());
+//            _netizen1OfflineMessages.pop_front();
+//        }
+//    } else{
+//        cout << "length: " << _netizen2OfflineMessages.size() << endl;
+//        while(!(_netizen2OfflineMessages.empty())){
+//            netizen->sendMessage(_netizen2OfflineMessages.front()->toJson());
+//            _netizen2OfflineMessages.pop_front();
+//        }
+//    }
 
-}
+//}

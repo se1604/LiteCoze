@@ -2,6 +2,7 @@
 #include "netizen.h"
 #include <iostream>
 
+#include "groupchatroom.h"
 
 using namespace std;
 AccountManager* AccountManager::_instance = nullptr;
@@ -14,6 +15,11 @@ AccountManager::AccountManager()
 void AccountManager::addNetizen(Netizen *n)
 {
     _netizens.push_back(n);
+}
+
+void AccountManager::addGroupChatroom(GroupChatroom *groupChatroom)
+{
+    _groupChatrooms.push_back(groupChatroom);
 }
 
 void AccountManager::initFriend()
@@ -53,8 +59,18 @@ Netizen* AccountManager::checkAccount(Netizen *netizen, NetworkTransmission* net
 Netizen* AccountManager::findNetizen(Netizen *netizen)
 {
     for(auto n : _netizens){
-        if(n->findNetizen(netizen)){
+        if(n->id() == netizen->id()){
             return n;
+        }
+    }
+    return nullptr;
+}
+
+GroupChatroom *AccountManager::findGroupChatroom(GroupChatroom *groupChatroom)
+{
+    for(auto gcr : _groupChatrooms){
+        if(gcr->id() == groupChatroom->id()){
+            return gcr;
         }
     }
     return nullptr;
