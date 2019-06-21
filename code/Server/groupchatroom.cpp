@@ -77,6 +77,7 @@ bool GroupChatroom::parseJson(Conversion *conversion)
         m_id = gc->allocateGroupChatRoomID();
         m_nickname = root["nickname"].asString();
         m_avatar = root["avatar"].asString();
+        return true;
     }
 
     m_id = root["id"].asLargestInt();
@@ -95,9 +96,9 @@ Conversion *GroupChatroom::toJson(int type)
     Json::Value root;
     std::ostringstream os;
 
-    root["id"] = m_id;
-    root["nickname"] = m_nickname;
-    root["avatar"] = m_avatar;
+    root["groupChatroomID"] = m_id;
+    root["groupChatroomNickname"] = m_nickname;
+    root["groupChatroomAvatar"] = m_avatar;
 
     Json::StreamWriterBuilder writerBuilder;
     unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());

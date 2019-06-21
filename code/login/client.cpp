@@ -8,7 +8,10 @@
 #include "clientui.h"
 #include "conversion.h"
 #include "json/json.h"
-#include "searchui.h"               /////////////
+#include "searchui.h"
+#include "groupchatroom.h"
+
+/////////////
 using namespace std;
 
 Client *Client::_instance = nullptr;
@@ -68,9 +71,11 @@ void Client::findNetizen(long id)
 
 void Client::findGroup(long id)
 {
-    auto f = new Netizen(id);
-    f->setConversionType(11);
-    send(f->toJson());
+    auto group = new GroupChatRoom(id);
+    send(group->toJson(11));
+//    auto f = new Netizen(id);
+//    f->setConversionType(11);
+//    send(f->toJson());
 }
 
 void Client::addFriend(long id)
@@ -82,9 +87,8 @@ void Client::addFriend(long id)
 
 void Client::addGroup(long id)
 {
-    auto f = new Netizen(id);
-    f->setConversionType(13);
-    send(f->toJson());
+    auto group = new GroupChatRoom(id);
+    send(group->toJson(13));
 }
 
 void Client::acceptAddFriendRequest(Netizen *f)
@@ -244,10 +248,16 @@ bool Client::parseObject()
         //netizen->addFriend(f)
         return true;
     }
+    if (_recentlyAcceptItem->getType() == 10){
+        auto gcr = new GroupChatRoom();
+        gcr->parseJson(_recentlyAcceptItem);
+        netizen->addGroup(gcr);
+        return true;
+    }
     if(_recentlyAcceptItem->getType() == 12){
-        auto _f = new Netizen();
-        netizen->parseJson(_recentlyAcceptItem);
-        return  true;
+        auto group = new GroupChatRoom();
+        group->parseJson(_recentlyAcceptItem);
+        return true;
     }
     if (_recentlyAcceptItem->getType() == 13){
         auto f = new Netizen();

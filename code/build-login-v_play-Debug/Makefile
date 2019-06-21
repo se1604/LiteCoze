@@ -59,7 +59,9 @@ SOURCES       = ../login/main.cpp \
 		../login/privatechatroom.cpp \
 		../login/message.cpp \
 		../login/searchui.cpp \
-		../login/privatechat.cpp qrc_qml.cpp \
+		../login/groupchatroom.cpp \
+		../login/privatechat.cpp \
+		../login/groupchat.cpp qrc_qml.cpp \
 		moc_clientui.cpp \
 		moc_loginUI.cpp \
 		moc_searchui.cpp
@@ -72,7 +74,9 @@ OBJECTS       = main.o \
 		privatechatroom.o \
 		message.o \
 		searchui.o \
+		groupchatroom.o \
 		privatechat.o \
+		groupchat.o \
 		qrc_qml.o \
 		moc_clientui.o \
 		moc_loginUI.o \
@@ -242,6 +246,7 @@ DIST          = /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/spec_post.prf \
+		../login/.qmake.stash \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/default_pre.prf \
@@ -268,7 +273,9 @@ DIST          = /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/spec_pre.prf \
 		../login/netizen.h \
 		../login/privatechatroom.h \
 		../login/searchui.h \
-		../login/privatechat.h ../login/main.cpp \
+		../login/groupchatroom.h \
+		../login/privatechat.h \
+		../login/groupchat.h ../login/main.cpp \
 		../login/client.cpp \
 		../login/clientui.cpp \
 		../login/conversion.cpp \
@@ -277,7 +284,9 @@ DIST          = /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/spec_pre.prf \
 		../login/privatechatroom.cpp \
 		../login/message.cpp \
 		../login/searchui.cpp \
-		../login/privatechat.cpp
+		../login/groupchatroom.cpp \
+		../login/privatechat.cpp \
+		../login/groupchat.cpp
 QMAKE_TARGET  = login
 DESTDIR       = 
 TARGET        = login
@@ -454,6 +463,7 @@ Makefile: ../login/login.pro /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/linux-g++/qmak
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/default_pre.prf \
@@ -645,6 +655,7 @@ Makefile: ../login/login.pro /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/linux-g++/qmak
 /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/qt_config.prf:
 /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/linux-g++/qmake.conf:
 /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/exclusive_builds.prf:
 /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/toolchain.prf:
 /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/default_pre.prf:
@@ -686,8 +697,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../login/qml.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/V-PlaySDK/V-Play/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../login/client.h ../login/clientui.h ../login/conversion.h ../login/loginUI.h ../login/message.h ../login/netizen.h ../login/privatechatroom.h ../login/searchui.h ../login/privatechat.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../login/main.cpp ../login/client.cpp ../login/clientui.cpp ../login/conversion.cpp ../login/loginUI.cpp ../login/netizen.cpp ../login/privatechatroom.cpp ../login/message.cpp ../login/searchui.cpp ../login/privatechat.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../login/client.h ../login/clientui.h ../login/conversion.h ../login/loginUI.h ../login/message.h ../login/netizen.h ../login/privatechatroom.h ../login/searchui.h ../login/groupchatroom.h ../login/privatechat.h ../login/groupchat.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../login/main.cpp ../login/client.cpp ../login/clientui.cpp ../login/conversion.cpp ../login/loginUI.cpp ../login/netizen.cpp ../login/privatechatroom.cpp ../login/message.cpp ../login/searchui.cpp ../login/groupchatroom.cpp ../login/privatechat.cpp ../login/groupchat.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1013,6 +1024,7 @@ main.o: ../login/main.cpp /opt/V-PlaySDK/V-Play/gcc_64/include/QtGui/QGuiApplica
 		../login/netizen.h \
 		../login/privatechatroom.h \
 		../login/message.h \
+		../login/groupchatroom.h \
 		../login/client.h \
 		../login/conversion.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QString \
@@ -1059,6 +1071,7 @@ client.o: ../login/client.cpp ../login/client.h \
 		../login/netizen.h \
 		../login/privatechatroom.h \
 		../login/message.h \
+		../login/groupchatroom.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtGui/QGuiApplication \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtGui/qguiapplication.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtGui/qtguiglobal.h \
@@ -1183,7 +1196,9 @@ clientui.o: ../login/clientui.cpp ../login/clientui.h \
 		../login/netizen.h \
 		../login/privatechatroom.h \
 		../login/message.h \
-		../login/privatechat.h
+		../login/groupchatroom.h \
+		../login/privatechat.h \
+		../login/groupchat.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o clientui.o ../login/clientui.cpp
 
 conversion.o: ../login/conversion.cpp ../login/conversion.h
@@ -1248,6 +1263,7 @@ loginUI.o: ../login/loginUI.cpp ../login/loginUI.h \
 netizen.o: ../login/netizen.cpp ../login/netizen.h \
 		../login/privatechatroom.h \
 		../login/message.h \
+		../login/groupchatroom.h \
 		../login/conversion.h \
 		../login/client.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QString \
@@ -1282,18 +1298,21 @@ netizen.o: ../login/netizen.cpp ../login/netizen.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringalgorithms.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringview.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringbuilder.h \
-		../login/privatechat.h
+		../login/privatechat.h \
+		../login/groupchat.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o netizen.o ../login/netizen.cpp
 
 privatechatroom.o: ../login/privatechatroom.cpp ../login/privatechatroom.h \
 		../login/message.h \
-		../login/netizen.h
+		../login/netizen.h \
+		../login/groupchatroom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o privatechatroom.o ../login/privatechatroom.cpp
 
 message.o: ../login/message.cpp ../login/message.h \
 		../login/conversion.h \
 		../login/privatechatroom.h \
 		../login/netizen.h \
+		../login/groupchatroom.h \
 		../login/client.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QString \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstring.h \
@@ -1326,7 +1345,8 @@ message.o: ../login/message.cpp ../login/message.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringliteral.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringalgorithms.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringview.h \
-		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringbuilder.h
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringbuilder.h \
+		../login/groupchat.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o message.o ../login/message.cpp
 
 searchui.o: ../login/searchui.cpp ../login/searchui.h \
@@ -1383,8 +1403,15 @@ searchui.o: ../login/searchui.cpp ../login/searchui.h \
 		../login/client.h \
 		../login/conversion.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QString \
-		../login/privatechat.h
+		../login/privatechat.h \
+		../login/groupchat.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o searchui.o ../login/searchui.cpp
+
+groupchatroom.o: ../login/groupchatroom.cpp ../login/groupchatroom.h \
+		../login/message.h \
+		../login/netizen.h \
+		../login/privatechatroom.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o groupchatroom.o ../login/groupchatroom.cpp
 
 privatechat.o: ../login/privatechat.cpp ../login/privatechat.h \
 		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QString \
@@ -1442,9 +1469,73 @@ privatechat.o: ../login/privatechat.cpp ../login/privatechat.h \
 		../login/netizen.h \
 		../login/privatechatroom.h \
 		../login/message.h \
+		../login/groupchatroom.h \
 		../login/client.h \
-		../login/conversion.h
+		../login/conversion.h \
+		../login/clientui.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o privatechat.o ../login/privatechat.cpp
+
+groupchat.o: ../login/groupchat.cpp ../login/groupchat.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QString \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstring.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qchar.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qglobal.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qconfig.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qlogging.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qflags.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qatomic.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qmutex.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qnumeric.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qbytearray.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qrefcount.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qnamespace.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qarraydata.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringview.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringbuilder.h \
+		../login/searchui.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/QObject \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qobject.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qlist.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qiterator.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qpair.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringlist.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qregexp.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qmetatype.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/V-PlaySDK/V-Play/gcc_64/include/QtCore/qobject_impl.h \
+		../login/netizen.h \
+		../login/privatechatroom.h \
+		../login/message.h \
+		../login/groupchatroom.h \
+		../login/client.h \
+		../login/conversion.h \
+		../login/clientui.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o groupchat.o ../login/groupchat.cpp
 
 qrc_qml.o: qrc_qml.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_qml.o qrc_qml.cpp

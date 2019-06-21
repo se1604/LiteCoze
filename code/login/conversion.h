@@ -9,7 +9,7 @@ public:
     Conversion();
     enum { header_length = 4 };
     enum { type_length = 2 };
-    enum { max_body_length = 512 };
+    enum { max_body_length = 5000 };
 
     const char* data() const;
     char* data();

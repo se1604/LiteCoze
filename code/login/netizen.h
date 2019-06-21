@@ -7,6 +7,7 @@
 #include "groupchatroom.h"
 #include <string>
 
+class GroupChatRoom;
 class Conversion;
 
 class Netizen
@@ -23,7 +24,7 @@ public:
     bool parseJson(Conversion *conversion);
     Conversion* toJson();//将Netizen对象转换为json字符串
     void addFriend(Netizen *f, long roomID);
-    void addGroup(long roomID, std::string name, std::string touxaing,  std::vector<Netizen*> netizens);    //添加群和当前用户关联
+    void addGroup(GroupChatRoom *group);    //添加群和当前用户关联
     void setConversionType(int type);//设置Conversion的type
 
     void printInfo();      //显示好友列表

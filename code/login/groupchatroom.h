@@ -8,22 +8,22 @@ class Netizen;
 class GroupChatRoom
 {
 public:
-    GroupChatRoom(long id, std::string name, std::string touxiang, std::vector<Netizen*> netizens);
+    GroupChatRoom(long id = 0, std::string name = "", std::string touxiang = "");
     void addNetizen(Netizen * netizen);
 
     Conversion* createNewMessage(std::string content);
     void addMessage(Message *mes);
+    bool parseJson(Conversion *conversion);
+    Conversion* toJson(int type);
     long id() const;
     std::string name() const;
-    void setName(const std::string &name);
 
     std::string touxiang() const;
-    void setTouxiang(const std::string &touxiang);
 
 private:
     long m_id;
-    std::string m_name;
-    std::string m_touxiang;
+    std::string m_nickname;
+    std::string m_avatar;
     std::vector<Netizen*> _netizens;
     std::vector<Message*> _messages;
 };
