@@ -127,9 +127,21 @@ Window {
             anchors.leftMargin: 90
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 4
-            color: "red"
+//            color: "red"
+            border.width: 1
+            border.color: "red"
+
             radius: 180
             visible: true
+
+            Text {
+                id: searchText
+                color: "red"
+                text: qsTr("+")
+                font.pointSize: 18
+
+                anchors.centerIn: parent
+            }
 
             MouseArea {
                 anchors.fill: parent
@@ -148,13 +160,15 @@ Window {
             anchors.left: search.right
             anchors.leftMargin: 4
             anchors.bottom: search.bottom
-            color: "blue"
+//            color: "blue"
+            border.width: 1
+            border.color: "blue"
             radius: 180
             visible: true
             Text {
                 id: newFriendText
                 anchors.centerIn: parent
-                color: "white"
+                font.pointSize: 15
             }
 
             MouseArea {
@@ -173,10 +187,12 @@ Window {
             width: 250
             height: 300
             anchors.left: newFriend.right
-            anchors.leftMargin: 5
+            anchors.leftMargin: 6
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 4
-            color: "blue"
+            color: "white"
+            border.width: 1
+            border.color: "#F6F6F6"
             visible: ifClicked
 
             ListView {
@@ -202,14 +218,15 @@ Window {
                         parent.color = "#D2D5D5"
                     }
                     onExited: {
-                        parent.color = "#F6F6F6"
+                        parent.color = "white"
                     }
                     onClicked: {
 
                     }
                 }
 
-                color: "#F6F6F6"
+                color: "white"
+                border.width: 1
 
                 Rectangle {
                     id: touxiang
@@ -252,6 +269,7 @@ Window {
                     anchors.bottomMargin: 5
                     onClicked: {
                         memberListModel.remove(listRecView.currentIndex)
+                        newFriendText.text = ""
                     }
                 }
                 Button {
@@ -265,6 +283,7 @@ Window {
                     onClicked: {
                         client.acceptAddFriendRequest(mottoText.text, nameText.text)
                         memberListModel.remove(listRecView.currentIndex)
+                        newFriendText.text = ""
                     }
                 }
             }

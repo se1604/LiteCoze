@@ -12,13 +12,14 @@
 #include "privatechatroom.h"
 #include "netizen.h"
 #include "client.h"
+#include "groupchat.h"
 
 using namespace std;
 extern Netizen * netizen;
 
 
 Message::Message(std::string content,long roomID):
-    m_content{content}, m_roomID{roomID}
+    m_content{content},m_roomID{roomID}
 {
     _conversion = new Conversion();
     setTime();
@@ -114,8 +115,8 @@ bool Message::parseJson(Conversion * conversion){
     m_content = root["content"].asString();
     long roomID = root["roomID"].asLargestInt();
 
-    netizen->room(roomID)->addMessage(this);
-    //_room->addMessage(this);
+    _room = netizen->room(roomID);
+    _room->addMessage(this);
 
     long friendID = netizen->friendID(roomID);
 
@@ -125,6 +126,47 @@ bool Message::parseJson(Conversion * conversion){
     std::cout << "time: " << m_time << ": ";
     std::cout << "content: " << m_content << std::endl;
     std::cout << "roomID: " << roomID << std::endl;
+
+    return true;
+}
+
+bool Message::parseJsonForGroup(Conversion *conversion)
+{
+    _conversion = conversion;
+    char* c = conversion->body();
+    if (strlen(c) == 0)
+        return false;
+
+
+    JSONCPP_STRING errs;
+    Json::Value root;
+
+
+    Json::CharReaderBuilder readerBuilder;
+    std::unique_ptr<Json::CharReader> const jsonReader(readerBuilder.newCharReader());
+
+    bool res;
+    res = jsonReader->parse(c, c+strlen(c), &root, &errs);
+
+
+    if (!res || !errs.empty()) {
+        std::cout << "parseJson err. " << errs << std::endl;
+    }
+    m_time = root["time"].asString();
+    m_content = root["content"].asString();
+    long roomID = root["roomID"].asLargestInt();
+    long netizenID;
+
+    GroupChat::getInstance()->showGroupMsg(QString::number(netizenID, 10), QString::fromStdString(m_content), QString::number(roomID, 10));
+
+//    long friendID = netizen->friendID(roomID);
+
+//    Client::getInstance()->showFriendMsg(QString::number(friendID, 10), QString::fromStdString(m_content), QString::number(roomID, 10));
+
+    //测试
+//    std::cout << "time: " << m_time << ": ";
+//    std::cout << "content: " << m_content << std::endl;
+//    std::cout << "roomID: " << roomID << std::endl;
 
     return true;
 }

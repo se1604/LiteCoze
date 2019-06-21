@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include "privatechatroom.h"
+#include "groupchatroom.h"
+#include <string>
 
 class Conversion;
 
@@ -21,9 +23,11 @@ public:
     bool parseJson(Conversion *conversion);
     Conversion* toJson();//将Netizen对象转换为json字符串
     void addFriend(Netizen *f, long roomID);
+    void addGroup(long roomID, std::string name, std::string touxaing,  std::vector<Netizen*> netizens);    //添加群和当前用户关联
     void setConversionType(int type);//设置Conversion的type
-    //测试代码
-    void printInfo();
+
+    void printInfo();      //显示好友列表
+    void printGroupInfo();    //显示群列表
     bool isLoginSuccess();
 
     PrivateChatRoom *room(long roomID);
@@ -38,6 +42,7 @@ private:
     std::string m_avatar;
     std::vector<Netizen*> _friends;
     std::vector<PrivateChatRoom *> _privateChatRooms;
+    std::vector<GroupChatRoom *> _groupChatRoom;
     Conversion* _conversion;
     PrivateChatRoom* m_selectedRoom;
 };

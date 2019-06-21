@@ -2,6 +2,7 @@
 #include "searchui.h"
 #include "netizen.h"
 #include "client.h"
+#include "clientui.h"
 
 PrivateChat *PrivateChat::_instance = nullptr;
 extern Netizen * netizen;
@@ -13,10 +14,20 @@ PrivateChat::PrivateChat()
 
 }
 
+ClientUI *PrivateChat::getClientUI() const
+{
+    return _clientUI;
+}
+
+void PrivateChat::setClientUI(ClientUI *clientUI)
+{
+    _clientUI = clientUI;
+}
+
 PrivateChat *PrivateChat::getInstance()
 {
     if(_instance == nullptr)
-      _instance = new PrivateChat();
+        _instance = new PrivateChat();
     return _instance;
 }
 

@@ -72,14 +72,16 @@ Page {
                     parent.color = "#D2D5D5"
                 }
                 onExited: {
-                    parent.color = "#F6F6F6"
+                    parent.color = "white"
                 }
                 onClicked: {
 
                 }
             }
 
-            color: "#F6F6F6"
+//            color: "#F6F6F6"
+
+            border.width: 1
 
             Rectangle {
                 id: touxiang

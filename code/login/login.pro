@@ -22,7 +22,9 @@ SOURCES += \
     privatechatroom.cpp \
     message.cpp \
     searchui.cpp \
-    privatechat.cpp
+    groupchatroom.cpp \
+    privatechat.cpp \
+    groupchat.cpp
 
 RESOURCES += qml.qrc
 
@@ -46,5 +48,7 @@ HEADERS += \
     netizen.h \
     privatechatroom.h \
     searchui.h \
-    privatechat.h
+    groupchatroom.h \
+    privatechat.h \
+    groupchat.h
      

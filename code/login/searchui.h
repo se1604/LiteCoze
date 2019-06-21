@@ -9,10 +9,14 @@ class SearchUi : public QObject
 public:
     SearchUi();
     Q_INVOKABLE void findNetizen(QString id);
+    Q_INVOKABLE void findGroup(QString id);     //查找群
     Q_INVOKABLE void addFriend(QString id);
+    Q_INVOKABLE void addGroup(QString id);      //添加群
+
 signals:
     void showSearchUI();
-    void showFindInfo(QString nickName, QString id);
+    void showFindInfo(QString nickName, QString id);     //显示查找的网民
+    void showFindGroupInfo(QString name, QString id);    //显示查找的群
 private slots:
 
 };

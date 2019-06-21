@@ -3,6 +3,7 @@
 #include <QString>
 class SearchUi;
 class Netizen;
+class ClientUI;
 
 class PrivateChat
 {
@@ -19,12 +20,16 @@ public:
     SearchUi *getSearchUI() const;            /////////////////
     void setSearchUI(SearchUi *searchUI);
 
+    ClientUI *getClientUI() const;
+    void setClientUI(ClientUI *clientUI);
+
 private:
     PrivateChat();
 
     static PrivateChat* _instance;
 
     SearchUi * _searchUI;
+    ClientUI *_clientUI;
 };
 
 #endif // PRIVATECHAT_H

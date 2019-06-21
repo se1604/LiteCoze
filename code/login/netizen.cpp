@@ -6,8 +6,9 @@
 #include <sstream>
 #include "privatechatroom.h"
 #include "client.h"
-#include "privatechat.h"
 #include <QString>
+#include "privatechat.h"
+#include "groupchat.h"
 
 #include "json/json.h"
 using namespace std;
@@ -92,6 +93,7 @@ bool Netizen::parseJson(Conversion *conversion)
             addFriend(f, roomID[i].asLargestInt());
         }
         printInfo();
+        printGroupInfo();
         return true;
     }
     if(conversion->getType() == 8){
@@ -104,7 +106,7 @@ bool Netizen::parseJson(Conversion *conversion)
     if(conversion->getType() == 6){
         m_id = root["id"].asLargestInt();
         m_nickname = root["nickname"].asString();
-        PrivateChat::getInstance()->showFindInfo(QString::fromStdString(m_nickname), m_id);
+        Client::getInstance()->showFindInfo(QString::fromStdString(m_nickname), m_id);
         return true;
     }
     if(conversion->getType() == 7){
@@ -112,6 +114,19 @@ bool Netizen::parseJson(Conversion *conversion)
         m_nickname = root["nickname"].asString();
         std::cout << "id: " << m_id << std::endl;
         Client::getInstance()->showNewFriendInfo(QString::fromStdString(m_nickname), m_id);
+        return true;
+    }
+    if(conversion->getType() == 12){
+        long id = root["id"].asLargestInt();
+        std::string name = root["nickname"].asString();
+        GroupChat::getInstance()->showFindGroupInfo(QString::fromStdString(name), QString::number(id, 10));
+        return true;
+    }
+    if(conversion->getType() == 13){
+        long id = root["id"].asLargestInt();
+        std::string name = root["nickname"].asString();
+        std::cout << "id: " << id << std::endl;
+        GroupChat::getInstance()->showNewGroupInfo(QString::fromStdString(name), QString::number(id, 10));
         return true;
     }
     //测试
@@ -169,6 +184,12 @@ void Netizen::addFriend(Netizen *f, long roomID)
     cout << m_nickname << "与" << f->m_nickname << "成为朋友" << endl << endl;
 }
 
+void Netizen::addGroup(long roomID, string name, string touxaing,  std::vector<Netizen*> netizens)
+{
+    GroupChatRoom *room = new GroupChatRoom(roomID, name, touxaing, netizens);
+    _groupChatRoom.push_back(room);
+}
+
 void Netizen::setConversionType(int type)
 {
     _conversion->setType(type);
@@ -179,6 +200,14 @@ void Netizen::printInfo(){
     cout << "所有的好友信息： " << endl;
     for(auto f : _friends){
         Client::getInstance()->showAccountInfo(QString::fromStdString(f->m_nickname), f->m_id, f->_privateChatRooms[0]->id());
+    }
+}
+
+void Netizen::printGroupInfo()
+{
+    cout << "所有的群信息： " << endl;
+    for(auto f : _groupChatRoom){
+        GroupChat::getInstance()->showGrouplistInfo(QString::fromStdString(f->name()), QString::number(f->id(), 10));
     }
 }
 
