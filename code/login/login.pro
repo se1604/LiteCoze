@@ -52,3 +52,5 @@ HEADERS += \
     privatechat.h \
     groupchat.h
      
+
+DISTFILES +=

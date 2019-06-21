@@ -39,9 +39,9 @@ void GroupChat::showFindGroupInfo(QString name, QString id)
     emit _searchUI->showFindGroupInfo(name, id);
 }
 
-void GroupChat::showNewGroupInfo(QString name, QString id)
+void GroupChat::showNewGroupInfo(QString name, QString id, QString groupName, QString roomid)
 {
-    emit _clientUI->showNewGroupInfo(name, id);
+    emit _clientUI->showNewGroupInfo(name, id, groupName, roomid);
 }
 
 SearchUi *GroupChat::getSearchUI() const

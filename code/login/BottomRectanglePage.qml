@@ -114,6 +114,9 @@ Item {
                         xiahuaxianRectangle2_1.visible = false
                         friendText1.visible = true
                         groupText1.visible = false
+                        newRecView.model = newmemberListModel
+                        newRecView.delegate = newcomponent
+                        creatGroupRec.visible = false
                     }
                     onEntered: {
                         xiahuaxianRectangle1.visible = true
@@ -156,6 +159,9 @@ Item {
                         xiahuaxianRectangle1_1.visible = false
                         groupText1.visible = true
                         friendText1.visible = false
+                        newRecView.model = newGroupListModel
+                        newRecView.delegate = newgroupcomponent
+                        creatGroupRec.visible = true
                     }
                     onEntered: {
                         xiahuaxianRectangle2.visible = true
@@ -324,15 +330,25 @@ Item {
     }
 
     //群model和delegate
+    Connections {
+        target: client
+        onShowGrouplistInfo: {
+            console.log("dd")
+//            memberListModel.clear()
+            groupListModel.append({"name":name, "roomid":roomid})
+        }
+    }
     ListModel {
         id: groupListModel
 
         ListElement {
             name: "世界首脑交流会议"
+            roomid: "000123545"
         }
 
         ListElement {
             name: "兰若若的幼儿园"
+            roomid: "00054328"
         }
     }
     Component {
@@ -350,6 +366,12 @@ Item {
                 }
                 onExited: {
                     parent.color = "#F6F6F6"
+                }
+                onClicked: {
+                    chatGroupModle.clear()
+                    chatGroupModle.append({"name":name, "roomid":roomid})
+                    chatListView.model = chatGroupModle
+                    chatListView.delegate = chatGroupComponentDelegate
                 }
             }
 
@@ -374,6 +396,9 @@ Item {
                 anchors.left: touxiang.right
                 anchors.leftMargin: parent.width * 0.02
                 anchors.verticalCenter: parent.verticalCenter
+            }
+            ListModel {
+                id: chatGroupModle
             }
         }
     }
@@ -412,6 +437,20 @@ Item {
 
             topChatText.text: name
             topChatId.text: id
+            topChatRoomid.text: roomid
+        }
+    }
+
+    Component {
+        id: chatGroupComponentDelegate
+
+        ChatGroupRectangle {
+            id: chatGroupRectangleDelegate
+            width: chatRectangleView.width
+            height: chatRectangleView.height
+
+            topChatText.text: name
+//            topChatId.text: id
             topChatRoomid.text: roomid
         }
     }

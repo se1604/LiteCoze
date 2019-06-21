@@ -18,7 +18,7 @@ public:
     void showGrouplistInfo(QString name, QString roomid);     //显示群列表
     void showGroupMsg(QString id, QString msg, QString roomid);    //显示群聊信息
     void showFindGroupInfo(QString name, QString id);    //显示查找的群
-    void showNewGroupInfo(QString name, QString id);       //显示添加群请求
+    void showNewGroupInfo(QString name, QString id, QString groupName, QString roomid);       //显示添加群请求
 
 private:
     GroupChat();

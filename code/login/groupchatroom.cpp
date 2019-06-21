@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "json/json.h"
+extern Netizen * netizen;
 
 using namespace std;
 
@@ -69,16 +70,18 @@ bool GroupChatRoom::parseJson(Conversion *conversion)
             auto f = new Netizen(memberID[i].asLargestInt(), memberNickname[i].asString(), "");
             addNetizen(f);
         }
+        GroupChat::getInstance()->showGrouplistInfo(QString::fromStdString(m_nickname), QString::number(m_id, 10));
     }else if(conversion->getType() == 12){
         //long id = root["groupChatroomID"].asLargestInt();
         //std::string name = root["groupChatroomNickname"].asString();
         GroupChat::getInstance()->showFindGroupInfo(QString::fromStdString(m_nickname), QString::number(m_id, 10));
+        std::cout << "qunid: " << m_id << ": ";
+        std::cout << "nickname: " << m_nickname << std::endl;
         return true;
     }
 
     //测试
-    std::cout << "id: " << m_id << ": ";
-    std::cout << "nickname: " << m_nickname << std::endl;
+
 
     return true;
 }

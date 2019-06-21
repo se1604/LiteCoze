@@ -85,10 +85,11 @@ void Client::addFriend(long id)
     send(f->toJson());
 }
 
-void Client::addGroup(long id)
+void Client::addGroup(long id, long roomid)
 {
-    auto group = new GroupChatRoom(id);
-    send(group->toJson(13));
+    auto n = new Netizen(id);
+    n->setConversionType(13);
+    send(n->toJson(roomid));
 }
 
 void Client::acceptAddFriendRequest(Netizen *f)
@@ -97,10 +98,11 @@ void Client::acceptAddFriendRequest(Netizen *f)
     send(f->toJson());
 }
 
-void Client::acceptAddGroupRequest(Netizen *f)
+void Client::acceptAddGroupRequest(long id, long roomid)
 {
-    f->setConversionType(14);
-    send(f->toJson());
+    auto n = new Netizen(id);
+    n->setConversionType(14);
+    send(n->toJson(roomid));
 }
 
 void Client::Register(long id, string nickname, string password)

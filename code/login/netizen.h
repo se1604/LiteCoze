@@ -23,6 +23,7 @@ public:
     Conversion* createNewMessage(std::string content);
     bool parseJson(Conversion *conversion);
     Conversion* toJson();//将Netizen对象转换为json字符串
+    Conversion* toJson(long roomID);
     void addFriend(Netizen *f, long roomID);
     void addGroup(GroupChatRoom *group);    //添加群和当前用户关联
     void setConversionType(int type);//设置Conversion的type
@@ -35,6 +36,8 @@ public:
     long friendID(long roomID);
 
     long id() const;
+
+    std::string groupName(long id);
 
 private:
     long m_id;

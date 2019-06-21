@@ -18,7 +18,7 @@ public:
    Q_INVOKABLE void sendNewMessage(QString content);
    Q_INVOKABLE void startSearchUI();
    Q_INVOKABLE void acceptAddFriendRequest(QString id, QString nickname);
-   Q_INVOKABLE void acceptAddGroupRequest(QString id, QString name);
+   Q_INVOKABLE void acceptAddGroupRequest(QString roomid, QString roomname);
    Q_INVOKABLE void flushAccountInfo();
 
    QString id() const;
@@ -32,7 +32,7 @@ signals:
    void showFriendMsg(QString id, QString msg, QString roomid);
    void showGroupMsg(QString id, QString msg, QString roomid);   //显示群聊信息
    void showNewFriendInfo(QString nickName, QString id);
-   void showNewGroupInfo(QString name, QString id);       //显示添加群请求
+   void showNewGroupInfo(QString name, QString id, QString groupname, QString roomid);       //显示添加群请求
 private:
    static ClientUI * _instance;
    QString m_id;

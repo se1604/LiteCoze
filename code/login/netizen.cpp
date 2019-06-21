@@ -12,6 +12,7 @@
 
 #include "json/json.h"
 using namespace std;
+extern Netizen * netizen;
 
 Netizen::Netizen(long id, string password):
     m_id{id}, m_password{password}, m_nickname{""}, m_avatar{""}
@@ -120,8 +121,9 @@ bool Netizen::parseJson(Conversion *conversion)
     if(conversion->getType() == 13){
         m_id = root["id"].asLargestInt();
         m_nickname = root["nickname"].asString();
+        long groupId = root["roomid"].asLargestInt();
         std::cout << "id: " << m_id << std::endl;
-        GroupChat::getInstance()->showNewGroupInfo(QString::fromStdString(m_nickname), QString::number(m_id, 10));
+        GroupChat::getInstance()->showNewGroupInfo(QString::fromStdString(m_nickname), QString::number(m_id, 10), QString::fromStdString(netizen->groupName(groupId)), QString::number(groupId));
         //root["roomID"].asLargestInt()
         return true;
     }
@@ -143,6 +145,40 @@ Conversion* Netizen::toJson()
     root["id"] = m_id;
     root["password"] = m_password;
     root["nickname"] = m_nickname;
+
+
+    Json::StreamWriterBuilder writerBuilder;
+    unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
+    jsonWriter->write(root, &os);
+
+    std::string jsonStr;
+    jsonStr = os.str();
+
+    //std::cout << "Json:\n" << jsonStr << std::endl;
+
+    char* c;
+    const int len = jsonStr.length();
+    c =new char[len+1];
+    strcpy(c,jsonStr.c_str());
+
+    _conversion->body_length(jsonStr.length());
+    //_conversion->m_body_length = jsonStr.length();
+    //memcpy(data_ + header_length, c, body_length_);
+    strcpy(_conversion->body(),c);
+
+    _conversion->encode_header();
+    _conversion->encode_type();
+    //cout << _conversion->data() << endl;
+    return _conversion;
+}
+
+Conversion *Netizen::toJson(long roomID)
+{
+    Json::Value root;
+    std::ostringstream os;
+
+    root["id"] = m_id;
+    root["roomID"] = roomID;
 
 
     Json::StreamWriterBuilder writerBuilder;
@@ -237,6 +273,15 @@ long Netizen::friendID(long roomID)
 long Netizen::id() const
 {
     return m_id;
+}
+
+string Netizen::groupName(long id)
+{
+    for(auto f : _groupChatRoom){
+        if(f->id() == id){
+            return f->name();
+        }
+    }
 }
 
 

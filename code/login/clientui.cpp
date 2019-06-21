@@ -3,6 +3,7 @@
 #include "netizen.h"
 #include "privatechat.h"
 #include "groupchat.h"
+extern Netizen * netizen;
 
 ClientUI *ClientUI::_instance = nullptr;
 
@@ -43,10 +44,9 @@ void ClientUI::acceptAddFriendRequest(QString id, QString nickname)
     Client::getInstance()->acceptAddFriendRequest(f);
 }
 
-void ClientUI::acceptAddGroupRequest(QString id, QString name)
+void ClientUI::acceptAddGroupRequest(QString roomid, QString roomname)
 {
-    auto f = new Netizen(id.toLong(), name.toStdString(), 1);
-    Client::getInstance()->acceptAddGroupRequest(f);
+    Client::getInstance()->acceptAddGroupRequest(netizen->id(), roomid.toLong());
 }
 
 void ClientUI::flushAccountInfo()

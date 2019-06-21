@@ -2,6 +2,9 @@
 #include "client.h"
 #include "privatechat.h"
 #include "groupchat.h"
+#include "netizen.h"
+
+extern Netizen * netizen;
 
 SearchUi::SearchUi()
 {
@@ -25,7 +28,7 @@ void SearchUi::addFriend(QString id)
     Client::getInstance()->addFriend(id.toLong());
 }
 
-void SearchUi::addGroup(QString id)
+void SearchUi::addGroup(QString roomid)
 {
-    Client::getInstance()->addGroup(id.toLong());
+    Client::getInstance()->addGroup(netizen->id(),roomid.toLong());
 }

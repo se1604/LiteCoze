@@ -11,5 +11,6 @@
         <file>SearchForGroup.qml</file>
         <file>SearchForFriend.qml</file>
         <file>Search.qml</file>
+        <file>ChatGroupRectangle.qml</file>
     </qresource>
 </RCC>

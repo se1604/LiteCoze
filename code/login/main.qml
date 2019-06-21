@@ -19,7 +19,16 @@ Window {
         target: client
         onShowNewFriendInfo: {
             console.log("ff")
-            memberListModel.append({"name":nickName, "motto":id})
+            newmemberListModel.append({"name":nickName, "motto":id})
+            newFriendText.text = "+1"
+        }
+    }
+
+    Connections {
+        target: client
+        onShowNewGroupInfo: {
+            console.log("ff")
+            newGroupListModel.append({"name":name, "motto":id, "groupname":groupgame, "roomid":roomid})
             newFriendText.text = "+1"
         }
     }
@@ -127,7 +136,7 @@ Window {
             anchors.leftMargin: 90
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 4
-//            color: "red"
+            //            color: "red"
             border.width: 1
             border.color: "red"
 
@@ -160,7 +169,7 @@ Window {
             anchors.left: search.right
             anchors.leftMargin: 4
             anchors.bottom: search.bottom
-//            color: "blue"
+            //            color: "blue"
             border.width: 1
             border.color: "blue"
             radius: 180
@@ -184,29 +193,29 @@ Window {
         //新朋友界面
         Rectangle {
             id: newFriendJ
-            width: 250
-            height: 300
+            width: 350
+            height: 250
             anchors.left: newFriend.right
             anchors.leftMargin: 6
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 4
             color: "white"
+            border.color: "#dbc3c3"
             border.width: 1
-            border.color: "#F6F6F6"
             visible: ifClicked
 
             ListView {
-                id: listRecView
+                id: newRecView
                 anchors.fill: parent
 
-                model: memberListModel
-                delegate: component
+                model: newmemberListModel
+                delegate: newcomponent
                 clip: true
             }
         }
-
+        //xin peng you
         Component {
-            id: component
+            id: newcomponent
             Rectangle {
                 width: newFriendJ.width
                 height: 40
@@ -227,6 +236,7 @@ Window {
 
                 color: "white"
                 border.width: 1
+                border.color: "#dbc3c3"
 
                 Rectangle {
                     id: touxiang
@@ -268,7 +278,7 @@ Window {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 5
                     onClicked: {
-                        memberListModel.remove(listRecView.currentIndex)
+                        newmemberListModel.remove(newRecView.currentIndex)
                         newFriendText.text = ""
                     }
                 }
@@ -282,15 +292,197 @@ Window {
                     anchors.bottomMargin: 5
                     onClicked: {
                         client.acceptAddFriendRequest(mottoText.text, nameText.text)
-                        memberListModel.remove(listRecView.currentIndex)
+                        newmemberListModel.remove(newRecView.currentIndex)
                         newFriendText.text = ""
                     }
                 }
             }
+        }
+
+        //qun
+        Component {
+            id: newgroupcomponent
+            Rectangle {
+                width: newFriendJ.width
+                height: 40
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onEntered: {
+                        parent.color = "#D2D5D5"
+                    }
+                    onExited: {
+                        parent.color = "white"
+                    }
+                    onClicked: {
+
+                    }
+                }
+
+                color: "white"
+                border.width: 1
+                border.color: "#dbc3c3"
+
+                Rectangle {
+                    id: touxiang
+                    width: height
+                    height: parent.height - 3
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 3
+                    radius: 180
+
+                    color: "yellow"
+                }
+
+                Text {
+                    id: nameText
+                    text: name
+
+                    anchors.left: touxiang.right
+                    anchors.leftMargin: parent.width * 0.02
+                    anchors.top: touxiang.top
+                }
+
+                Text {
+                    id: mottoText
+                    text: "请求加入群：" + groupname
+
+                    anchors.left: nameText.left
+                    anchors.bottom: touxiang.bottom
+                    anchors.bottomMargin: parent.width * 0.02
+                }
+
+                Button {
+                    id: button1
+                    width: 50
+                    height: 30
+                    text: "忽略"
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 5
+                    onClicked: {
+                        newGroupListModel.remove(newRecView.currentIndex)
+                        newFriendText.text = ""
+                    }
+                }
+                Button {
+                    width: 50
+                    height: 30
+                    text: "接受"
+                    anchors.right: button1.left
+                    anchors.rightMargin: 5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 5
+                    onClicked: {
+                        client.acceptAddGroupRequest(mottoText.text, nameText.text)
+                        newGroupListModel.remove(newRecView.currentIndex)
+                        newFriendText.text = ""
+                    }
+                }
             }
+        }
 
         ListModel {
-            id: memberListModel
+            id: newmemberListModel
+            ListElement {
+                name: "啊爷"
+                motto: "你好啊。。"
+            }
+
+            ListElement {
+                name: "小明"
+                motto: "一起跨年哦"
+            }
+        }
+        ListModel {
+            id: newGroupListModel
+            ListElement {
+                name: "Tom"
+                gname: "世界首脑交流会议"
+            }
+
+            ListElement {
+                name: "Jarry"
+                gname: "兰若若的幼儿园"
+            }
+        }
+
+
+        //创建群
+        //按钮
+        Rectangle {
+            id: creatGroupRec
+            width: 30
+            height: 30
+            anchors.left: newFriend.left
+            anchors.bottom: newFriend.top
+            anchors.bottomMargin: 4
+            //            color: "blue"
+            border.width: 1
+            border.color: "blue"
+            radius: 180
+            visible: false
+            Text {
+                id: creatGroupT
+                anchors.centerIn: parent
+                font.pointSize: 15
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                    createGroupJ.visible = true
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        id: createGroupJ
+        width: 250
+        height: 100
+        border.width: 1
+        anchors.centerIn: parent
+        visible: false
+
+        ColumnLayout {
+            id: columnLayout
+            anchors.centerIn: parent
+            spacing: 2
+
+            RowLayout {
+                id: rowLayout
+                spacing: 2
+                Label {
+                    text: "群 名"
+                }
+                TextField {
+                    id: groupName
+                }
+            }
+
+
+            RowLayout {
+                id: rowLayout1
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 2
+                Button {
+                    text: "确定"
+                    onClicked: {
+                        createGroupJ.visible = false
+                    }
+                }
+                Button {
+                    text: "取消"
+                    onClicked: {
+                        createGroupJ.visible = false
+                    }
+                }
+            }
         }
     }
 }

@@ -23,9 +23,9 @@ public:
     void findNetizen(long id);//查找
     void findGroup(long id);     //查找群
     void addFriend(long id);//请求添加好友
-    void addGroup(long id);//请求添加好群
+    void addGroup(long id, long roomid);//请求添加好群
     void acceptAddFriendRequest(Netizen *f);//接受请求
-    void acceptAddGroupRequest(Netizen *f); //接受请求加入群
+    void acceptAddGroupRequest(long id, long roomid); //接受请求加入群
     void Register(long id, std::string nickname, std::string password);   ////////////
     void sendNewMessage(std::string content);
     void do_accept_head();
