@@ -21,8 +21,8 @@ int main()
         auto privateChat = new PrivateChat();
         privateChat->initFriend();
         privateChat->initGroup();
-        DBBroker::getInstance()->addGroupTODB(100000001,"软件工程专业群",333);
-       // server->accept();
+        //DBBroker::getInstance()->addGroupTODB(100000001,"软件工程专业群",333);
+        server->accept();
 
         io_context.run();
     } catch (domain_error e) {
