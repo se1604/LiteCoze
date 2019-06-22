@@ -1,6 +1,7 @@
 #include "dbbroker.h"
 #include <sstream>
 #include "accountmanager.h"
+#include "groupchatroom.h"
 
 DBBroker* DBBroker::_instance = nullptr;
 
@@ -78,6 +79,16 @@ long DBBroker::stolong(std::string str){
     return result;
 }
 
+std::string DBBroker::longToS(long id)
+{
+    std::ostringstream os;
+    os<<id;
+    std::string result;
+    std::istringstream is("g"+os.str());
+    is>>result;
+    return result;
+}
+
 void DBBroker::initFrinedInfo(Netizen *netizen)
 {
     long temp_id=netizen->id();
@@ -86,7 +97,7 @@ void DBBroker::initFrinedInfo(Netizen *netizen)
     long netizen1_id=0;
     long netizen2_id=0;
 
-    mysql_query(_connect, "SELECT * FROM room");
+    mysql_query(_connect, "SELECT * FROM privateroom");
     _result = mysql_store_result(_connect);
     num_clo = mysql_num_fields(_result);
 
@@ -126,10 +137,85 @@ void DBBroker::initFrinedInfo(Netizen *netizen)
     //    mysql_close(_connect);
 }
 
+void DBBroker::initGroupInfo(Netizen *netizen)
+{
+    char sql[1024]={0};
+    unsigned num_clo;
+    long temp_id=netizen->id();
+    long room_id=0;
+    long netizen_id=0;
+    //int num;
+    std::string name;
+
+    snprintf(sql,sizeof (sql),"select grouproom.id,grouproom.name from grouproom,netizen_grouproom where netizen_grouproom.netizen_id='%ld' and netizen_grouproom.grouproom_id=grouproom.id",temp_id);
+
+    mysql_query(_connect, sql);
+    _result = mysql_store_result(_connect);
+    num_clo = mysql_num_fields(_result);
+
+//    num=mysql_num_rows(_result);
+//    std::cout<<num<<"个群";
+    while ((m_row = mysql_fetch_row(_result)))
+    {
+        for (unsigned i=0; i < num_clo;i++)
+        {
+            if(m_row[i]){
+                if(i==0){
+                    std::string temp=m_row[i];
+                    room_id=stolong(temp);
+                }else if(i==1){
+                   name=m_row[i];
+                }
+            }
+        }
+        std::cout<<temp_id<<"的群信息"<<std::endl;
+        std::cout<<"群号"<<room_id<<"群名"<<name<<std::endl;//测试代码
+        auto grouproom=new GroupChatroom(room_id,name,"");
+        AccountManager::getInstance()->addGroupChatroom(grouproom);
+        netizen->addGroupChatroom(grouproom);
+        grouproom->initMemeber(netizen);
+    }
+    mysql_free_result(_result);
+}
+
+void DBBroker::queryMemberOfGroup(GroupChatroom *grouproom,Netizen* netizen)
+{
+    unsigned num;
+    int num_row;
+    char sql[1024]={0};
+    long netizen_id=0;
+    long id=grouproom->id();
+    std::string s=longToS(id);
+
+    snprintf(sql,sizeof (sql),"select * from %s",s.c_str());
+    mysql_query(_connect,sql);
+    _result=mysql_store_result(_connect);
+    num=mysql_num_fields(_result);
+    num_row=mysql_num_rows(_result);
+
+    for(int j=0;j<num_row;j++){
+        if((m_row= mysql_fetch_row(_result))){
+            for (unsigned i=0; i < num;i++)
+            {
+                if(m_row[i]){
+                    std::string temp=m_row[i];
+                    netizen_id=stolong(temp);
+                }
+            }
+            auto n=new Netizen();
+            n=AccountManager::getInstance()->getNetizen(netizen_id);
+            grouproom->addGroupMember(n);
+            if(j==0 && (netizen->id()==netizen_id))
+                netizen->addOwnGroupChatroom(grouproom);
+        }
+    }
+    mysql_free_result(_result);
+}
+
 void DBBroker::addFriendTODB(long room, long n1_id, long n2_id)
 {
     char sql[1024]={0};
-    snprintf(sql,sizeof (sql),"insert into room"
+    snprintf(sql,sizeof (sql),"insert into privateroom"
                               "(id,netizen1_id,netizen2_id) values('%ld',"
                               "'%ld','%ld')",room,n1_id,n2_id);
     if(mysql_query(_connect,sql)){
@@ -152,3 +238,58 @@ void DBBroker::addAccountTODB(long id, std::string pw, std::string name)
         std::cout<<"插入数据成功"<<std::endl;
     }
 }
+
+void DBBroker::addGroupTODB(long id, std::string name,long netizen_id)
+{
+    char sql_1[1024]={0};
+
+    snprintf(sql_1,sizeof (sql_1),"insert into grouproom"
+                                  " (id,name) values('%ld',"
+                                  "'%s')",id,name.c_str());
+    if(mysql_query(_connect,sql_1)){
+        std::cout<<"创建群失败"<<std::endl;
+    }else {
+        std::cout<<"创建群成功"<<std::endl;
+    }
+    addGroupInfo(id,netizen_id);
+    createMemberList(id);
+    addMember(id,netizen_id);
+}
+
+void DBBroker::createMemberList(long id)
+{
+    char sql_3[1024]={0};
+    std::string s=longToS(id);
+    snprintf(sql_3,sizeof (sql_3),"create table %s(netizen_id BIGINT,foreign key (netizen_id) references netizen(id))",s.c_str());
+    if(mysql_query(_connect,sql_3)){
+        std::cout<<"创建失败"<<std::endl;
+    }else {
+        std::cout<<"创建成功"<<std::endl;
+    }
+}
+
+void DBBroker::addGroupInfo(long id, long netizen_id)
+{
+    char sql_2[1024]={0};
+    snprintf(sql_2,sizeof (sql_2),"insert into netizen_grouproom"
+                                  "(grouproom_id,netizen_id) values ("
+                                  "'%ld','%ld')",id,netizen_id);
+    if(mysql_query(_connect,sql_2)){
+        std::cout<<"插入失败"<<std::endl;
+    }else {
+        std::cout<<"插入成功"<<std::endl;
+    }
+}
+
+void DBBroker::addMember(long id, long netizen_id)
+{
+    char sql[1024]={0};
+    std::string s=longToS(id);
+    snprintf(sql,sizeof (sql),"insert into %s (netizen_id) values ('%ld')",s.c_str(),netizen_id);
+    if(mysql_query(_connect,sql)){
+        std::cout<<"插入失败"<<std::endl;
+    }else {
+        std::cout<<"插入成功"<<std::endl;
+    }
+}
+

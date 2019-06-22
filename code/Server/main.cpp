@@ -6,6 +6,7 @@
 #include "accountmanager.h"
 #include "dbbroker.h"
 #include "privatechat.h"
+#include "groupchatroom.h"
 
 using namespace std;
 using boost::asio::ip::tcp;
@@ -21,8 +22,10 @@ int main()
         DBBroker::getInstance()->initAccount();
         auto privateChat = new PrivateChat();
         privateChat->initFriend();
-        //AccountManager::getInstance()->initFriend();
-        server->accept();
+        privateChat->initGroup();
+
+        AccountManager::getInstance()->printInfo();
+    //    server->accept();
 
         io_context.run();
     } catch (domain_error e) {

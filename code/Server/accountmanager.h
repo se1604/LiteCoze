@@ -16,6 +16,7 @@ public:
     void addNetizen(Netizen *netizen);
     void addGroupChatroom(GroupChatroom *groupChatroom);
     void initFriend();
+    void initGroup();
     Netizen *getNetizen(long id);//通过网民id号找到网民
 
     void printInfo();//测试代码

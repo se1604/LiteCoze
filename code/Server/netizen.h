@@ -26,6 +26,8 @@ public:
     void addNewOffLineMessage(Message *message);
     void dealAddFriendRequest(Netizen *netizen);//处理添加好友的请求
     void addFriend(Netizen *f, long roomID);//添加好友
+    void addGroupChatroom(GroupChatroom *group);
+    void addOwnGroupChatroom(GroupChatroom *group);
     void acceptAddFriendRequest(Netizen *f);//接受添加好友的请求
     void acceptAddGroupChatroomRequest(Netizen *netizen, long roomID);//接受添加群的请求
     long parseJson(Conversion *conversion);

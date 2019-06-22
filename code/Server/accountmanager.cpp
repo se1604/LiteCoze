@@ -19,13 +19,39 @@ void AccountManager::addNetizen(Netizen *n)
 
 void AccountManager::addGroupChatroom(GroupChatroom *groupChatroom)
 {
-    _groupChatrooms.push_back(groupChatroom);
+  //  cout << "_groupChatrooms:  " << groupChatroom->id() << endl;
+    bool flag=true;
+    if(_groupChatrooms.size()==0){
+        _groupChatrooms.push_back(groupChatroom);
+    }else{
+        for (auto g:_groupChatrooms){
+            if(g->id()==groupChatroom->id()){
+                flag=false;
+            }
+        }
+        if(flag==true){
+            _groupChatrooms.push_back(groupChatroom);
+        }
+    }
+//    for (auto g:_groupChatrooms){
+//        if(g->id()==groupChatroom->id()){
+//            return;
+//        }
+//    }
+//    _groupChatrooms.push_back(groupChatroom);
 }
 
 void AccountManager::initFriend()
 {
     for (auto n:_netizens) {
         DBBroker::getInstance()->initFrinedInfo(n);
+    }
+}
+
+void AccountManager::initGroup()
+{
+    for(auto n:_netizens){
+        DBBroker::getInstance()->initGroupInfo(n);
     }
 }
 
@@ -70,17 +96,22 @@ GroupChatroom *AccountManager::findGroupChatroom(GroupChatroom *groupChatroom)
 {
     for(auto gcr : _groupChatrooms){
         if(gcr->id() == groupChatroom->id()){
+            cout << "查找成功" << endl;
             return gcr;
         }
     }
+    cout << "查找失败" << endl;
     return nullptr;
 }
 
 void AccountManager::printInfo()
 {
-    cout << "所有的用户信息: " << endl;
-    for(auto n : _netizens){
-        n->printInfo();
+ //   cout << "所有的用户信息: " << endl;
+//    for(auto n : _netizens){
+//        n->printInfo();
+//    }
+    for (auto g:_groupChatrooms){
+        std::cout<<g->id()<<std::endl;
     }
     cout << endl;
 }

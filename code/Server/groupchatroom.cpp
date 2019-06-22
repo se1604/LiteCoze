@@ -8,6 +8,7 @@
 #include <cstring>
 #include <memory>
 #include <sstream>
+#include "dbbroker.h"
 
 #include "json/json.h"
 
@@ -20,10 +21,6 @@ GroupChatroom::GroupChatroom(long id, std::string nickname, std::string avatar):
 
 }
 
-GroupChatroom::GroupChatroom()
-{
-
-}
 
 void GroupChatroom::addMessage(Message *message)
 {
@@ -40,6 +37,11 @@ void GroupChatroom::addMessage(Message *message)
 void GroupChatroom::addGroupMember(Netizen *netizen)
 {
     _netizens.push_back(netizen);
+}
+
+void GroupChatroom::addGroupOwner(Netizen *netizen)
+{
+    _owner = netizen;
 }
 
 
@@ -75,15 +77,17 @@ bool GroupChatroom::parseJson(Conversion *conversion)
     if (conversion->getType() == 9){
         auto gc = new GroupChat();
         m_id = gc->allocateGroupChatRoomID();
-        m_nickname = root["nickname"].asString();
-        m_avatar = root["avatar"].asString();
+        m_nickname = root["groupChatroomNickname"].asString();
+        m_avatar = root["groupChatroomAvatar"].asString();
         return true;
     }
 
-    m_id = root["id"].asLargestInt();
-    m_nickname = root["nickname"].asString();
-    m_avatar = root["avatar"].asString();
+    m_id = root["groupChatroomID"].asLargestInt();
+    m_nickname = root["groupChatroomNickname"].asString();
+    m_avatar = root["groupChatroomAvatar"].asString();
     //测试
+
+    cout << conversion->data() << endl;
     std::cout << "id: " << m_id << ": ";
     std::cout << "nickname: " << m_nickname << std::endl;
 
@@ -177,9 +181,10 @@ Conversion *GroupChatroom::allToJson()
 
 void GroupChatroom::dealAddGroupChatroomRequest(Netizen *netizen)
 {
-    if(_netizens[0]->isOnLine()){
+    cout << "处理添加群的请求。" << endl;
+    if(_owner->isOnLine()){
         netizen->setConversionType(13);
-        _netizens[0]->send(netizen->toJson(m_id));
+        _owner->send(netizen->toJson(m_id));
     }else {
         _allOffLineRequesters.push_back(netizen);
     }
@@ -187,8 +192,33 @@ void GroupChatroom::dealAddGroupChatroomRequest(Netizen *netizen)
 
 void GroupChatroom::sendAllOffLineAddGroupChatroomRequest()
 {
-    for(auto n : _allOffLineRequesters){
-        n->setConversionType(13);
-        _netizens[0]->send(n->toJson(m_id));
+    while (!_allOffLineRequesters.empty()) {
+        _allOffLineRequesters.front()->setConversionType(13);
+        _netizens[0]->send(_allOffLineRequesters.front()->toJson(m_id));
+        _allOffLineRequesters.pop_front();
+    }
+//    for(auto n : _allOffLineRequesters){
+//        n->setConversionType(13);
+//        _netizens[0]->send(n->toJson(m_id));
+//    }
+}
+
+void GroupChatroom::initMemeber(Netizen *netizen)
+{
+    DBBroker::getInstance()->queryMemberOfGroup(this,netizen);
+    printMemeber();
+}
+
+void GroupChatroom::addgroupTODB()
+{
+    long id=this->m_id;
+    std::string name=this->m_nickname;
+    DBBroker::getInstance()->addGroupTODB(id,name,_netizens[0]->id());
+}
+
+void GroupChatroom::printMemeber()
+{
+    for (auto n:_netizens){
+        n->printInfo();
     }
 }

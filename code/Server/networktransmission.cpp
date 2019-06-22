@@ -51,6 +51,8 @@ void NetworkTransmission::do_accept_body()
         if (!ec && _recentlyAcceptItem->decode_type())
         {
 
+            cout << "接收成功" << endl;
+            cout << _recentlyAcceptItem->data() << endl;
             //cout << _recentlyAcceptItem->data() << endl;
             parseObject();
             do_accept_head();
@@ -87,9 +89,11 @@ bool NetworkTransmission::parseObject()
         _netizen = AccountManager::getInstance()->checkAccount(netizen, this);
         if(_netizen){
             sendAccountInfo();
+            _netizen->printInfo();
             _netizen->sendAccountGroupChatrooms();
             _netizen->sendAllOffLineMessages();
             _netizen->sendAllOffLineFriendRequest();
+            _netizen->sendAllOffLineAddGroupChatroomRequest();
             return true;
         } else{
 //            throw domain_error("检测失败");
@@ -151,12 +155,17 @@ bool NetworkTransmission::parseObject()
             return false;
         }
     }else if (_recentlyAcceptItem->getType() == 9) {
-        auto grc = new GroupChatroom();
-        grc->parseJson(_recentlyAcceptItem);
-        AccountManager::getInstance()->addGroupChatroom(grc);
+        auto gcr = new GroupChatroom();
+        gcr->parseJson(_recentlyAcceptItem);
+        AccountManager::getInstance()->addGroupChatroom(gcr);
+        gcr->addGroupMember(_netizen);
+        gcr->addGroupOwner(_netizen);
+        send(gcr->toJson(10));
+        gcr->addgroupTODB();
     }else if (_recentlyAcceptItem->getType() == 11) {
         auto gcr = new GroupChatroom();
         gcr->parseJson(_recentlyAcceptItem);
+        cout << "开始查找" << endl;
         auto g = AccountManager::getInstance()->findGroupChatroom(gcr);
         delete gcr;
         gcr = nullptr;

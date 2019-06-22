@@ -11,10 +11,10 @@ class Conversion;
 class GroupChatroom
 {
 public:
-    GroupChatroom(long id, std::string nickname, std::string avatar = "");
-    GroupChatroom();
+    GroupChatroom(long id=0, std::string nickname="", std::string avatar = "");
     void addMessage(Message* message);//添加一条聊天消息到房间
     void addGroupMember(Netizen *netizen);
+    void addGroupOwner(Netizen *netizen);
     long id() const;
 
     bool parseJson(Conversion *conversion);
@@ -22,12 +22,17 @@ public:
     Conversion* allToJson();
     void dealAddGroupChatroomRequest(Netizen *netizen);
     void sendAllOffLineAddGroupChatroomRequest();
+    void initMemeber(Netizen *netizen);
+    void addgroupTODB();
+
+    void printMemeber();//测试
 
 private:
     long m_id;
     std::string m_nickname;
     std::string m_avatar;//头像
-    std::vector<Netizen*> _netizens;//群成员，默认第一个成员为群主
+    Netizen * _owner;//群主
+    std::vector<Netizen*> _netizens;//群成员，包括群主
     std::deque<Netizen*> _allOffLineRequesters;//请求加入群的网民
     std::vector<Message*> _messages;
 };

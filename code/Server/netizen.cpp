@@ -131,6 +131,17 @@ void Netizen::addFriend(Netizen *f, long roomID)
     cout << m_nickname << "与" << f->m_nickname << "成为朋友" << endl << endl;
 }
 
+void Netizen::addGroupChatroom(GroupChatroom *group)
+{
+    _groupChatrooms.push_back(group);
+}
+
+void Netizen::addOwnGroupChatroom(GroupChatroom *group)
+{
+    _ownGroupChatroom.push_back(group);
+    group->addGroupOwner(this);
+}
+
 void Netizen::acceptAddFriendRequest(Netizen *f)
 {
     auto privateChat = new PrivateChat();
@@ -154,6 +165,7 @@ void Netizen::acceptAddGroupChatroomRequest(Netizen *netizen, long roomID)
     for (auto room : _ownGroupChatroom){
         if(room->id() == roomID){
             room->addGroupMember(netizen);
+            DBBroker::getInstance()->addMember(roomID, netizen->id());
             if (netizen->isOnLine()){
                 netizen->send(room->allToJson());
             }
@@ -189,7 +201,8 @@ long Netizen::parseJson(Conversion *conversion)
     m_id = root["id"].asLargestInt();
     m_password = root["password"].asString();
     m_nickname = root["nickname"].asString();
-    if(conversion->getType() == 14){
+    if(conversion->getType() == 14 || conversion->getType() == 13){
+
         long roomID = root["roomID"].asLargestInt();
         return roomID;
     }
@@ -323,6 +336,13 @@ void Netizen::addAccount()
 
 void Netizen::printInfo(){
     cout << "id: " << m_id << "昵称: " << m_nickname << endl;
+    for (auto group : _groupChatrooms){
+        cout << "ID: " << group->id() << endl;
+    }
+    cout << "管理的群： ";
+    for (auto group : _ownGroupChatroom){
+        cout << "ID: " << group->id() << endl;
+    }
 }
 
 long Netizen::id() const
