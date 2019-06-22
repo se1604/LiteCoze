@@ -121,7 +121,7 @@ bool Netizen::parseJson(Conversion *conversion)
     if(conversion->getType() == 13){
         m_id = root["id"].asLargestInt();
         m_nickname = root["nickname"].asString();
-        long groupId = root["roomid"].asLargestInt();
+        long groupId = root["roomID"].asLargestInt();
         std::cout << "id: " << m_id << std::endl;
         GroupChat::getInstance()->showNewGroupInfo(QString::fromStdString(m_nickname), QString::number(m_id, 10), QString::fromStdString(netizen->groupName(groupId)), QString::number(groupId));
         //root["roomID"].asLargestInt()

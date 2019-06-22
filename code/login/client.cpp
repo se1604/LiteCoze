@@ -87,9 +87,11 @@ void Client::addFriend(long id)
 
 void Client::addGroup(long id, long roomid)
 {
-    auto n = new Netizen(id);
-    n->setConversionType(13);
-    send(n->toJson(roomid));
+    auto group = new GroupChatRoom(roomid);
+    send(group->toJson(13));
+//    auto n = new Netizen(id);
+//    n->setConversionType(13);
+//    send(n->toJson(roomid));
 }
 
 void Client::acceptAddFriendRequest(Netizen *f)
