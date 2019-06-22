@@ -27,10 +27,13 @@ public:
     void addFriend(Netizen *f, long roomID);
     void addGroup(GroupChatRoom *group);    //添加群和当前用户关联
     void setConversionType(int type);//设置Conversion的type
+    void addInGroup(long roomid, long netizenid);
 
     void printInfo();      //显示好友列表
     void printGroupInfo();    //显示群列表
     bool isLoginSuccess();
+
+    std::string sendername(long roomid, long senderid);
 
     PrivateChatRoom *room(long roomID);
     long friendID(long roomID);
@@ -38,6 +41,8 @@ public:
     long id() const;
 
     std::string groupName(long id);
+
+    std::string nickname() const;
 
 private:
     long m_id;

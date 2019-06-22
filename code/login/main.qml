@@ -28,7 +28,7 @@ Window {
         target: client
         onShowNewGroupInfo: {
             console.log("ff")
-            newGroupListModel.append({"name":name, "motto":id, "groupname":groupgame, "roomid":roomid})
+            newGroupListModel.append({"name":name, "motto":id, "groupname":groupname, "roomid":roomid})
             newFriendText.text = "+1"
         }
     }
@@ -127,7 +127,7 @@ Window {
             delegate: chatCo
         }
 
-        //搜索
+        //搜索按钮
         Rectangle {
             id: search
             width: 30
@@ -347,7 +347,7 @@ Window {
 
                 Text {
                     id: mottoText
-                    text: "请求加入群：" + groupname
+                    text: "请求加入群：" + groupname + roomid
 
                     anchors.left: nameText.left
                     anchors.bottom: touxiang.bottom
@@ -377,7 +377,7 @@ Window {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 5
                     onClicked: {
-                        client.acceptAddGroupRequest(mottoText.text, nameText.text)
+                        client.acceptAddGroupRequest(roomid, motto)
                         newGroupListModel.remove(newRecView.currentIndex)
                         newFriendText.text = ""
                     }
@@ -389,24 +389,26 @@ Window {
             id: newmemberListModel
             ListElement {
                 name: "啊爷"
-                motto: "你好啊。。"
+                motto: "432"
             }
 
             ListElement {
                 name: "小明"
-                motto: "一起跨年哦"
+                motto: "434"
             }
         }
         ListModel {
             id: newGroupListModel
             ListElement {
                 name: "Tom"
-                gname: "世界首脑交流会议"
+                groupname: "世界首脑交流会议"
+                roomid: "124354325345"
             }
 
             ListElement {
                 name: "Jarry"
-                gname: "兰若若的幼儿园"
+                groupname: "兰若若的幼儿园"
+                roomid: "4324356536456"
             }
         }
 
@@ -473,6 +475,7 @@ Window {
                 Button {
                     text: "确定"
                     onClicked: {
+                        client.createGroup(groupName.text)
                         createGroupJ.visible = false
                     }
                 }

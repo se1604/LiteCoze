@@ -115,12 +115,21 @@ bool Message::parseJson(Conversion * conversion){
     m_content = root["content"].asString();
     long roomID = root["roomID"].asLargestInt();
 
-    _room = netizen->room(roomID);
-    _room->addMessage(this);
+    if(roomID < 200000000){
+        _room = netizen->room(roomID);
+        _room->addMessage(this);
 
-    long friendID = netizen->friendID(roomID);
+        long friendID = netizen->friendID(roomID);
 
-    Client::getInstance()->showFriendMsg(QString::number(friendID, 10), QString::fromStdString(m_content), QString::number(roomID, 10));
+        Client::getInstance()->showFriendMsg(QString::number(friendID, 10), QString::fromStdString(m_content), QString::number(roomID, 10));
+    }else if (roomID >= 200000000) {
+        long senderID = root["senderID"].asLargestInt();
+        if(senderID != netizen->id()){
+            GroupChat::getInstance()->showGroupMsg(QString::number(senderID, 10),QString::fromStdString(m_content), QString::number(roomID, 10));
+        }
+    }
+
+
 
     //测试
     std::cout << "time: " << m_time << ": ";

@@ -17,6 +17,7 @@ public:
     Conversion* toJson(int type);
     long id() const;
     std::string name() const;
+    std::string sendername(long senderid);
 
     std::string touxiang() const;
 

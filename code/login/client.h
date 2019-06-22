@@ -26,6 +26,7 @@ public:
     void addGroup(long id, long roomid);//请求添加好群
     void acceptAddFriendRequest(Netizen *f);//接受请求
     void acceptAddGroupRequest(long id, long roomid); //接受请求加入群
+    void creatGroup(std::string name);        //创建群
     void Register(long id, std::string nickname, std::string password);   ////////////
     void sendNewMessage(std::string content);
     void do_accept_head();
@@ -39,6 +40,7 @@ public:
     void showAllOffLineMessages(Conversion *conversio);
     void selectFriend(long friendID);
     void send(Conversion *conversion);
+    void sendGroupNewMessage(long roomid, QString content);
     bool parseObject();
     bool isLoginSuccess();
     void startClientUI();

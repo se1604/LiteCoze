@@ -6,6 +6,7 @@ Item {
     id: chatItem
     property alias topChatText: topChatText
     property alias topChatId: topChatId
+    property alias topChatmyId: topChatmyId
     property alias topChatRoomid: topChatRoomid
     property  bool ifme
 
@@ -49,6 +50,16 @@ Item {
 //            x: 200
             anchors.verticalCenter: parent.verticalCenter
         }
+
+        Text {
+            id: topChatmyId
+            font.pointSize: 16
+
+            anchors.left: topChatRoomid.right
+            anchors.leftMargin: 10
+//            x: 200
+            anchors.verticalCenter: parent.verticalCenter
+        }
     }
 
     Connections {
@@ -66,20 +77,20 @@ Item {
     ListModel {
         id: midChatModel
 
-        Component.onCompleted: loadData()
-        Component.onDestruction: saveData()
+//        Component.onCompleted: loadData()
+//        Component.onDestruction: saveData()
 
         function saveData(){
             console.log("cc")
             var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
             db.transaction(
                         function(tx) {
-                            tx.executeSql('DROP TABLE ' + 'ab'+topChatRoomid.text);
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+topChatRoomid.text +'(message TEXT, me BOOL)');
+                            tx.executeSql('DROP TABLE ' + 'ab'+topChatRoomid.text+topChatmyId.text );
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+topChatRoomid.text+topChatmyId.text +'(message TEXT, me BOOL)');
                             var index = 0;
                             while (index < midChatModel.count) {
                                 var myItem = midChatModel.get(index);
-                                tx.executeSql('INSERT INTO ' + 'ab'+topChatRoomid.text + ' VALUES(?,?)', [myItem.message, myItem.me]);
+                                tx.executeSql('INSERT INTO ' + 'ab'+topChatRoomid.text+topChatmyId.text  + ' VALUES(?,?)', [myItem.message, myItem.me]);
                                 index++;
                             }
                         }
@@ -90,11 +101,11 @@ Item {
             var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
             db.transaction(
                         function(tx) {
-//                            tx.executeSql('DROP TABLE ' + 'ab'+topChatRoomid.text);
+//                            tx.executeSql('DROP TABLE ' + 'ab'+topChatRoomid.text+topChatId.text );
                             // Create the database if it doesn't already exist
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+topChatRoomid.text +'(message TEXT, me BOOL)');
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+topChatRoomid.text+topChatmyId.text  +'(message TEXT, me BOOL)');
 
-                            var rs = tx.executeSql('SELECT * FROM ' + 'ab'+topChatRoomid.text);
+                            var rs = tx.executeSql('SELECT * FROM ' + 'ab'+topChatRoomid.text+topChatmyId.text );
                             console.log("aa")
                             var index = 0;
                             if (rs.rows.length > 0) {
@@ -229,11 +240,10 @@ Item {
                 anchors.bottomMargin: 5
 
                 onClicked: {
-                    ifme = true
-                    midChatModel.append({"message":bottTextArea.text, "me": true})
-
                     client.selectFriend(topChatId.text)
                     client.sendNewMessage(bottTextArea.text)
+                    ifme = true
+                    midChatModel.append({"message":bottTextArea.text, "me": ifme})
                 }
             }
         }

@@ -227,6 +227,16 @@ void Netizen::setConversionType(int type)
     _conversion->setType(type);
 }
 
+void Netizen::addInGroup(long roomid, long netizenid)
+{
+    for(auto f : _groupChatRoom){
+        if(f->id() == roomid){
+            Netizen * a = new Netizen(netizenid);
+            f->addNetizen(a);
+        }
+    }
+}
+
 void Netizen::printInfo(){
     Client::getInstance()->clearAccountInfo();
     cout << "所有的好友信息： " << endl;
@@ -249,6 +259,16 @@ bool Netizen::isLoginSuccess()
         return true;
     }
     return false;
+}
+
+string Netizen::sendername(long roomid, long senderid)
+{
+    for(auto f : _groupChatRoom){
+        if(f->id() == roomid){
+            return f->sendername(senderid);
+        }
+    }
+    return "none";
 }
 
 PrivateChatRoom *Netizen::room(long roomID)
@@ -282,6 +302,11 @@ string Netizen::groupName(long id)
             return f->name();
         }
     }
+}
+
+std::string Netizen::nickname() const
+{
+    return m_nickname;
 }
 
 

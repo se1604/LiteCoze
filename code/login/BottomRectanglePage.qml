@@ -31,9 +31,9 @@ Item {
                     var db = LocalStorage.openDatabaseSync("MyDB", "1.0", "My model SQL", 50000);
                     db.transaction(
                                 function(tx) {
-//                                    tx.executeSql('DROP TABLE ' + 'ab'+roomid);
-                                    tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+roomid +'(message TEXT, me BOOL)');
-                                    tx.executeSql('INSERT INTO ' + 'ab'+roomid + ' VALUES(?,?)', [msg, ifmee]);
+//                                    tx.executeSql('DROP TABLE ' + 'ab'+roomid+id);
+                                    tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 'ab'+roomid+id +'(message TEXT, me BOOL)');
+                                    tx.executeSql('INSERT INTO ' + 'ab'+roomid+id + ' VALUES(?,?)', [msg, ifmee]);
 //                                    tx.executeSql('INSERT INTO ' + 'ab'+topChatRoomid.text + ' VALUES(?,?)', [myItem.message, myItem.me]);
                                 }
                                 )
@@ -195,7 +195,7 @@ Item {
         onShowAccountInfo: {
             console.log("ff")
 //            memberListModel.clear()
-            memberListModel.append({"name":nickName, "motto":id, "roomid":roomid})
+            memberListModel.append({"name":nickName, "motto":id, "roomid":roomid, "myid":myid})
         }
     }
 
@@ -284,7 +284,7 @@ Item {
                 }
                 onClicked: {
                     chatModle.clear()
-                    chatModle.append({"name":name, "id":motto, "roomid":roomid})
+                    chatModle.append({"name":name, "id":motto, "roomid":roomid, "myid":myid})
                     chatListView.model = chatModle
                     chatListView.delegate = chatComponentDelegate
                 }
@@ -335,21 +335,21 @@ Item {
         onShowGrouplistInfo: {
             console.log("dd")
 //            memberListModel.clear()
-            groupListModel.append({"name":name, "roomid":roomid})
+            groupListModel.append({"name":name, "roomid":roomid, "myid":myid})
         }
     }
     ListModel {
         id: groupListModel
 
-        ListElement {
-            name: "世界首脑交流会议"
-            roomid: "000123545"
-        }
+//        ListElement {
+//            name: "世界首脑交流会议"
+//            roomid: "000123545"
+//        }
 
-        ListElement {
-            name: "兰若若的幼儿园"
-            roomid: "00054328"
-        }
+//        ListElement {
+//            name: "兰若若的幼儿园"
+//            roomid: "00054328"
+//        }
     }
     Component {
         id: groupListDelegate
@@ -369,7 +369,7 @@ Item {
                 }
                 onClicked: {
                     chatGroupModle.clear()
-                    chatGroupModle.append({"name":name, "roomid":roomid})
+                    chatGroupModle.append({"name":name, "roomid":roomid, "myid":myid})
                     chatListView.model = chatGroupModle
                     chatListView.delegate = chatGroupComponentDelegate
                 }
@@ -437,7 +437,9 @@ Item {
 
             topChatText.text: name
             topChatId.text: id
+            topChatmyId.text: myid
             topChatRoomid.text: roomid
+
         }
     }
 
@@ -450,7 +452,7 @@ Item {
             height: chatRectangleView.height
 
             topChatText.text: name
-//            topChatId.text: id
+            topChatId.text: myid
             topChatRoomid.text: roomid
         }
     }

@@ -26,12 +26,12 @@ void GroupChat::setClientUI(ClientUI *clientUI)
 
 void GroupChat::showGrouplistInfo(QString name, QString roomid)
 {
-    emit _clientUI->showGrouplistInfo(name, roomid);
+    emit _clientUI->showGrouplistInfo(name, roomid, QString::number(netizen->id(), 10));
 }
 
 void GroupChat::showGroupMsg(QString id, QString msg, QString roomid)
 {
-    emit _clientUI->showGroupMsg(id, msg, roomid);
+    emit _clientUI->showGroupMsg(id, QString::fromStdString(netizen->sendername(roomid.toLong(), id.toLong())), msg, roomid);
 }
 
 void GroupChat::showFindGroupInfo(QString name, QString id)
@@ -42,6 +42,11 @@ void GroupChat::showFindGroupInfo(QString name, QString id)
 void GroupChat::showNewGroupInfo(QString name, QString id, QString groupName, QString roomid)
 {
     emit _clientUI->showNewGroupInfo(name, id, groupName, roomid);
+}
+
+void GroupChat::addInGroup(long roomid, long netizenid)
+{
+    netizen->addInGroup(roomid, netizenid);
 }
 
 SearchUi *GroupChat::getSearchUI() const

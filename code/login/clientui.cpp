@@ -33,6 +33,11 @@ void ClientUI::sendNewMessage(QString content)
     Client::getInstance()->sendNewMessage(content.toStdString());
 }
 
+void ClientUI::sendGroupNewMessage(QString roomid, QString content)
+{
+    Client::getInstance()->sendGroupNewMessage(roomid.toLong(), content);
+}
+
 void ClientUI::startSearchUI()
 {
     Client::getInstance()->startSearchUI();
@@ -44,14 +49,20 @@ void ClientUI::acceptAddFriendRequest(QString id, QString nickname)
     Client::getInstance()->acceptAddFriendRequest(f);
 }
 
-void ClientUI::acceptAddGroupRequest(QString roomid, QString roomname)
+void ClientUI::acceptAddGroupRequest(QString roomid, QString senderid)
 {
-    Client::getInstance()->acceptAddGroupRequest(netizen->id(), roomid.toLong());
+    Client::getInstance()->acceptAddGroupRequest(senderid.toLong(), roomid.toLong());
+    GroupChat::getInstance()->addInGroup(roomid.toLong(), senderid.toLong());
 }
 
 void ClientUI::flushAccountInfo()
 {
     Client::getInstance()->flushAccountInfo();
+}
+
+void ClientUI::createGroup(QString name)
+{
+    Client::getInstance()->creatGroup(name.toStdString());
 }
 
 QString ClientUI::id() const

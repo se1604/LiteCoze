@@ -53,11 +53,11 @@ Item {
 
     Connections {
         target: client
-        onShowFriendMsg: {
+        onShowGroupMsg: {
 //            console.log("ff")
             if(roomid === topChatRoomid.text){
                 ifme = false
-                midChatModel.append({"message":msg, "me": ifme})
+                midChatModel.append({"message":msg, "me": ifme, "sendername":sendername})
             }
         }
     }
@@ -66,8 +66,8 @@ Item {
     ListModel {
         id: midChatModel
 
-        Component.onCompleted: loadData()
-        Component.onDestruction: saveData()
+//        Component.onCompleted: loadData()
+//        Component.onDestruction: saveData()
 
         function saveData(){
             console.log("cc")
@@ -120,7 +120,7 @@ Item {
         Rectangle {
             id: rectangleCom
             width: midChatRe.width
-            height: textRec.height > touxiangRec.height ? textRec.height + 15  : touxiangRec.height + 15
+            height: textRec.height + senderName.height > touxiangRec.height ? textRec.height + 15 + senderName.height  : touxiangRec.height + 15
 //            color: "red"
 
             Rectangle {
@@ -146,6 +146,7 @@ Item {
 //                anchors.rightMargin: 9
                 x: me ? 430-textRec.width-9 : 10+touxiangRec.width+9
                 anchors.top: touxiangRec.top
+                anchors.topMargin: 20
                 radius: 10
 
                 color: "pink"
@@ -159,6 +160,13 @@ Item {
 
                     text: message
                 }
+            }
+
+            Text {
+                id: senderName
+                text: sendername
+                x: me ? 430-senderName.width-9 : 10+touxiangRec.width+9
+                anchors.top: touxiangRec.top
             }
         }
     }
@@ -229,11 +237,9 @@ Item {
                 anchors.bottomMargin: 5
 
                 onClicked: {
+                    client.sendGroupNewMessage(topChatRoomid.text, bottTextArea.text)
                     ifme = true
-                    midChatModel.append({"message":bottTextArea.text, "me": true})
-
-                    client.selectFriend(topChatId.text)
-                    client.sendNewMessage(bottTextArea.text)
+                    midChatModel.append({"message":bottTextArea.text, "me": true, "sendername": "自己"})
                 }
             }
         }

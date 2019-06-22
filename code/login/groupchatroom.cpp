@@ -133,6 +133,16 @@ std::string GroupChatRoom::name() const
     return m_nickname;
 }
 
+string GroupChatRoom::sendername(long senderid)
+{
+    for(auto f : _netizens){
+        if(f->id() == senderid){
+            return f->nickname();
+        }
+    }
+    return "none";
+}
+
 
 std::string GroupChatRoom::touxiang() const
 {

@@ -10,7 +10,7 @@
 #include "json/json.h"
 #include "searchui.h"
 #include "groupchatroom.h"
-
+#include "message.h"
 /////////////
 using namespace std;
 
@@ -107,6 +107,12 @@ void Client::acceptAddGroupRequest(long id, long roomid)
     send(n->toJson(roomid));
 }
 
+void Client::creatGroup(string name)
+{
+    auto n = new GroupChatRoom(0, name, "");
+    send(n->toJson(9));
+}
+
 void Client::Register(long id, string nickname, string password)
 {
     Json::Value root;
@@ -191,7 +197,7 @@ void Client::do_accept_body()
 
 void Client::showAccountInfo(QString nickName, long id, long roomid)
 {
-    emit _clientUI->showAccountInfo(nickName, QString::number(id, 10), QString::number(roomid, 10));
+    emit _clientUI->showAccountInfo(nickName, QString::number(id, 10), QString::number(roomid, 10), QString::number(netizen->id(), 10));
 }
 
 void Client::flushAccountInfo()
@@ -295,6 +301,12 @@ void Client::send(Conversion *conversion)
     {
         do_send(conversion);
     });
+}
+
+void Client::sendGroupNewMessage(long roomid, QString content)
+{
+    auto f = new Message(content.toStdString(), roomid);
+    send(f->toJson());
 }
 void Client::do_send(Conversion *conversion)
 {
