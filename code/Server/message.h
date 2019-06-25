@@ -13,7 +13,6 @@ public:
     Conversion * toJson();
 
     long roomID() const;
-
     long senderID() const;
 
 private:

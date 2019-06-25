@@ -1,31 +1,19 @@
-#include "privatechat.h"
+#include "groupchat.h"
 
 #include <iostream>
 #include <fstream>
 
-#include "accountmanager.h"
-
 using namespace std;
 
-PrivateChat::PrivateChat()
+GroupChat::GroupChat()
 {
 
 }
 
-void PrivateChat::initFriend()
-{
-    AccountManager::getInstance()->initFriend();
-}
-
-void PrivateChat::initGroup()
-{
-    AccountManager::getInstance()->initGroup();
-}
-
-long PrivateChat::allocatePrivateChatRoomID()
+long GroupChat::allocateGroupChatRoomID()
 {
     long number;
-    ifstream ifs("../allocatePrivateroomID");
+    ifstream ifs("../allocateGrouproomID");
     if (ifs.fail())
     {
         cout<<"打开文件错误!"<<endl;
@@ -36,7 +24,7 @@ long PrivateChat::allocatePrivateChatRoomID()
     cout<<number<<endl;
     ifs.close();
 
-    ofstream ofs("../allocatePrivateroomID");
+    ofstream ofs("../allocateGrouproomID");
     if (ofs.fail())
     {
         cout<<"打开文件错误!"<<endl;

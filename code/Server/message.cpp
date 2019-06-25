@@ -62,6 +62,7 @@ Conversion *Message::toJson()
     root["time"] = m_time;
     root["content"] = m_content;
     root["roomID"] = m_roomID;
+    root["senderID"] = m_senderID;
 
     Json::StreamWriterBuilder writerBuilder;
     unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());

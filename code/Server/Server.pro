@@ -3,25 +3,30 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 LIBS += -lboost_system -lpthread -ljsoncpp -lmysqlclient
-QT += sql
 
 SOURCES += \
         main.cpp \
-    privatechat.cpp \
     netizen.cpp \
     networktransmission.cpp \
     privatechatroom.cpp \
     conversion.cpp \
     message.cpp \
-    manager.cpp \
-    dbbroker.cpp
+    dbbroker.cpp \
+    server.cpp \
+    accountmanager.cpp \
+    privatechat.cpp \
+    groupchat.cpp \
+    groupchatroom.cpp
 
 HEADERS += \
-    privatechat.h \
     netizen.h \
     networktransmission.h \
     privatechatroom.h \
     conversion.h \
     message.h \
-    manager.h \
-    dbbroker.h
+    dbbroker.h \
+    server.h \
+    accountmanager.h \
+    privatechat.h \
+    groupchat.h \
+    groupchatroom.h

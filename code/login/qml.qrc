@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Page1Form.qml</file>
+        <file>Page2Form.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>Login.qml</file>
+        <file>BottomRectanglePage.qml</file>
+        <file>ChatRectangle.qml</file>
+        <file>FriendCirclePage.qml</file>
+        <file>main.qml</file>
+        <file>SearchForGroup.qml</file>
+        <file>SearchForFriend.qml</file>
+        <file>Search.qml</file>
+        <file>ChatGroupRectangle.qml</file>
+    </qresource>
+</RCC>
